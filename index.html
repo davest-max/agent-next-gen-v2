@@ -29,6 +29,9 @@
       hash, e.g. in a terminal:
         python3 -c "import hashlib; print(hashlib.sha256(b'NEW_PASSWORD').hexdigest())"
       then paste the result into GATE_PASSWORD_HASH below.
+
+      No persistence: the unlock only lasts for the current page load —
+      refreshing or revisiting always re-prompts for the password.
     -->
     <style>
       #agent-gate-overlay {
@@ -106,19 +109,6 @@
         display: block;
       }
     </style>
-    <script>
-      // Runs synchronously, before <body> paints, so a returning tester who
-      // already unlocked this browser doesn't see a flash of the gate.
-      (function () {
-        try {
-          if (localStorage.getItem("agentGateOK") === "1") {
-            document.documentElement.classList.add("agent-gate-unlocked");
-          }
-        } catch (e) {
-          /* localStorage unavailable (private mode, etc.) — fall back to showing the gate every visit */
-        }
-      })();
-    </script>
   </head>
   <body>
     <div id="agent-gate-overlay" role="dialog" aria-modal="true" aria-labelledby="agent-gate-title">
@@ -167,11 +157,7 @@
           evt.preventDefault();
           sha256Hex(input.value).then(function (hash) {
             if (hash === GATE_PASSWORD_HASH) {
-              try {
-                localStorage.setItem("agentGateOK", "1");
-              } catch (e) {
-                /* ignore — gate will just re-prompt next visit */
-              }
+              // No localStorage flag — every fresh page load re-prompts.
               document.documentElement.classList.add("agent-gate-unlocked");
             } else {
               error.hidden = false;
