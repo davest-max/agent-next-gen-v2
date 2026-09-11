@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Keep this preview out of search engines and social-card scrapers. -->
+    <meta name="robots" content="noindex, nofollow" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <title>agent-next-gen-v2</title>
+
+    <!--
+      Tester access gate (client-side password screen).
+
+      IMPORTANT: this is a soft gate, not real security. It keeps this
+      preview off Google and stops people from stumbling onto the link
+      by accident, but anyone who opens devtools can read the app's HTML
+      and network requests regardless of this password. Do not put
+      anything here you'd consider confidential if a determined visitor
+      saw it. For real protection, put this behind Cloudflare Access (or
+      similar) instead.
+
+      To change the password: pick a new one and generate its SHA-256
+      hash, e.g. in a terminal:
+        python3 -c "import hashlib; print(hashlib.sha256(b'NEW_PASSWORD').hexdigest())"
+      then paste the result into GATE_PASSWORD_HASH below.
+    -->
+    <style>
+      #agent-gate-overlay {
+        position: fixed;
+        inset: 0;
+        z-index: 9999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #0f172a;
+        font-family: Inter, system-ui, -apple-system, sans-serif;
+        padding: 24px;
+      }
+      #agent-gate-overlay .agent-gate-card {
+        width: 100%;
+        max-width: 360px;
+        background: #ffffff;
+        border-radius: 12px;
+        padding: 32px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+      }
+      #agent-gate-overlay h1 {
+        margin: 0 0 8px;
+        font-size: 18px;
+        font-weight: 600;
+        color: #0f172a;
+      }
+      #agent-gate-overlay p {
+        margin: 0 0 20px;
+        font-size: 14px;
+        color: #475569;
+      }
+      #agent-gate-overlay input {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 10px 12px;
+        font-size: 14px;
+        border: 1px solid #cbd5e1;
+        border-radius: 8px;
+        margin-bottom: 12px;
+      }
+      #agent-gate-overlay input:focus {
+        outline: none;
+        border-color: #2563eb;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+      }
+      #agent-gate-overlay button {
+        width: 100%;
+        padding: 10px 12px;
+        font-size: 14px;
+        font-weight: 600;
+        color: #fff;
+        background: #2563eb;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+      }
+      #agent-gate-overlay button:hover {
+        background: #1d4ed8;
+      }
+      #agent-gate-overlay #agent-gate-error {
+        margin: 12px 0 0;
+        font-size: 13px;
+        color: #dc2626;
+      }
+      /* Default (locked) state: hide the app, show the gate. */
+      #root {
+        display: none;
+      }
+      /* Once unlocked (class added to <html> by the script below), flip it. */
+      html.agent-gate-unlocked #agent-gate-overlay {
+        display: none !important;
+      }
+      html.agent-gate-unlocked #root {
+        display: block;
+      }
+    </style>
+    <script>
+      // Runs synchronously, before <body> paints, so a returning tester who
+      // already unlocked this browser doesn't see a flash of the gate.
+      (function () {
+        try {
+          if (localStorage.getItem("agentGateOK") === "1") {
+            document.documentElement.classList.add("agent-gate-unlocked");
+          }
+        } catch (e) {
+          /* localStorage unavailable (private mode, etc.) — fall back to showing the gate every visit */
+        }
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="agent-gate-overlay" role="dialog" aria-modal="true" aria-labelledby="agent-gate-title">
+      <form id="agent-gate-form" class="agent-gate-card">
+        <h1 id="agent-gate-title">Testers only</h1>
+        <p>Enter the access password to view this preview.</p>
+        <input
+          id="agent-gate-input"
+          type="password"
+          autocomplete="current-password"
+          placeholder="Password"
+          required
+        />
+        <button type="submit">Enter</button>
+        <p id="agent-gate-error" hidden>Incorrect password. Try again.</p>
+      </form>
+    </div>
+    <script>
+      (function () {
+        // SHA-256 of the current password, so the plaintext isn't sitting
+        // in view-source. Change this (see the comment in <head>) to
+        // rotate the password.
+        var GATE_PASSWORD_HASH =
+          "5cac11583c10a3d5e80019fc79d6d725a6e1bebd38ceb82048f2cebf3acec5d4";
+
+        if (document.documentElement.classList.contains("agent-gate-unlocked")) {
+          return;
+        }
+
+        function sha256Hex(text) {
+          var data = new TextEncoder().encode(text);
+          return crypto.subtle.digest("SHA-256", data).then(function (buf) {
+            return Array.prototype.map
+              .call(new Uint8Array(buf), function (b) {
+                return b.toString(16).padStart(2, "0");
+              })
+              .join("");
+          });
+        }
+
+        var form = document.getElementById("agent-gate-form");
+        var input = document.getElementById("agent-gate-input");
+        var error = document.getElementById("agent-gate-error");
+
+        form.addEventListener("submit", function (evt) {
+          evt.preventDefault();
+          sha256Hex(input.value).then(function (hash) {
+            if (hash === GATE_PASSWORD_HASH) {
+              try {
+                localStorage.setItem("agentGateOK", "1");
+              } catch (e) {
+                /* ignore — gate will just re-prompt next visit */
+              }
+              document.documentElement.classList.add("agent-gate-unlocked");
+            } else {
+              error.hidden = false;
+              input.value = "";
+              input.focus();
+            }
+          });
+        });
+      })();
+    </script>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
