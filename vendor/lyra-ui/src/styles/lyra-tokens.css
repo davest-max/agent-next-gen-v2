@@ -1,0 +1,1371 @@
+/* ════════════════════════════════════════════════════
+   Lyra Foundations (Beta) — Design Tokens
+   Mapped from Figma Semantic Colors & Semantic Sizes
+   ════════════════════════════════════════════════════ */
+
+:root {
+  /* ── Background ── */
+  --lyra-color-bg-surface-base: #ffffff;
+  --lyra-color-bg-surface-canvas: #FBFCFE;
+  --lyra-color-bg-surface-container: #ffffff;
+  --lyra-color-bg-surface-container-subtle: #fbfcfe;
+  --lyra-color-bg-surface-shell: #F5F7F9;
+  --lyra-color-bg-surface-backdrop: rgba(0, 0, 0, 0.24);
+  --lyra-color-bg-surface-overlay: #ffffff;
+  --lyra-color-bg-surface-inverse: #2a2d32;
+  --lyra-color-bg-primary: #166cca;
+  --lyra-color-bg-secondary: #ffffff;
+  --lyra-color-bg-destructive: #BD2A2A;
+  --lyra-color-bg-control: #ffffff;
+  --lyra-color-bg-control-subtle: rgba(0, 0, 0, 0.02);
+  --lyra-color-bg-field: #ffffff;
+  --lyra-color-bg-ai: rgba(143, 115, 227, 0.04);
+  --lyra-color-bg-disabled: rgba(0, 0, 0, 0.06);
+  --lyra-color-bg-none: rgba(0, 0, 0, 0.00);
+  --lyra-color-bg-active-strong: #166cca;
+  --lyra-color-bg-active-moderate: #D3E6FD;
+  --lyra-color-bg-active-subtle: #F1F7FE;
+  --lyra-color-bg-conversation-ai: #F5F7F9;
+  --lyra-color-bg-conversation-agent: #E5EEFF;
+  --lyra-color-bg-conversation-customer: #DEF7E1;
+  --lyra-color-bg-conversation-user: #E5EEFF;
+
+  /* ── Foreground / Text ── */
+  --lyra-color-fg-default: rgba(0, 0, 0, 0.80);
+  --lyra-color-fg-secondary: rgba(0, 0, 0, 0.60);
+  --lyra-color-fg-action: #5D6A79;
+  --lyra-color-fg-disabled: rgba(0, 0, 0, 0.55);
+  --lyra-color-fg-link: #185ba4;
+  --lyra-color-fg-inverse: #ffffff;
+  --lyra-color-fg-inverse-disabled: rgba(255, 255, 255, 0.30);
+  --lyra-color-fg-on-primary: #ffffff;
+  --lyra-color-fg-on-destructive: #ffffff;
+  --lyra-color-fg-active-subtle: #f5faff;
+  --lyra-color-fg-active-strong: #185ba4;
+
+  /* ── Border ── */
+  --lyra-color-border-subtle: rgba(0, 0, 0, 0.10);
+  --lyra-color-border-soft: rgba(0, 0, 0, 0.16);
+  --lyra-color-border-medium: rgba(0, 0, 0, 0.32);
+  --lyra-color-border-strong: rgba(0, 0, 0, 0.46);
+  --lyra-color-border-disabled: rgba(0, 0, 0, 0.10);
+  --lyra-color-border-active: #185BA4;
+  --lyra-color-border-field-ai: #4e39a8;
+  --lyra-color-border-inverse: rgba(255, 255, 255, 0.80);
+  --lyra-color-border-none: rgba(0, 0, 0, 0.00);
+  --lyra-color-border-focus-default: #185ba4;
+  --lyra-color-border-focus-inverse: #FACB33;
+
+  /* ── Status ── */
+  --lyra-color-status-success-strong: #23722D;
+  --lyra-color-status-success-medium: #64B96F;
+  --lyra-color-status-success-subtle: #ebfaed;
+  --lyra-color-status-info-strong: #2D5BB9;
+  --lyra-color-status-info-medium: #789FED;
+  --lyra-color-status-info-subtle: #f0f5ff;
+  --lyra-color-status-critical-strong: #BD2A2A;
+  --lyra-color-status-critical-medium: #fa7f7f;
+  --lyra-color-status-critical-subtle: #fff0f0;
+  --lyra-color-state-bg-hover-critical-subtle: #ffebeb;
+  --lyra-color-state-bg-pressed-critical-subtle: #ffe0e0;
+  --lyra-color-status-warning-strong: #8e6800;
+  --lyra-color-status-warning-medium: #FACB33;
+  --lyra-color-status-warning-subtle: #fffae0;
+
+  /* ── State ── */
+  --lyra-color-state-bg-hover-opacity: rgba(0, 0, 0, 0.04);
+  --lyra-color-state-bg-pressed-opacity: rgba(0, 0, 0, 0.10);
+  --lyra-color-state-bg-hover-secondary: #FBFCFE;
+  --lyra-color-state-bg-pressed-secondary: #F5F7F9;
+  --lyra-color-state-bg-hover-active-subtle: #e8f1fc;
+  --lyra-color-state-bg-pressed-active-subtle: #D3E6FD;
+  --lyra-color-state-bg-hover-active-strong: #185ba4;
+  --lyra-color-state-bg-pressed-active-strong: #164479;
+  --lyra-color-state-bg-hover-primary: #185ba4;
+  --lyra-color-state-bg-pressed-primary: #164479;
+  --lyra-color-state-bg-hover-destructive: #902222;
+  --lyra-color-state-bg-pressed-destructive: #6d2222;
+  --lyra-color-state-border-hover-neutral: rgba(0, 0, 0, 0.80);
+
+  /* ── Avatar ── */
+  /* Avatar bg is intentionally theme-invariant — same value in light and dark */
+  --lyra-color-avatar-default-bg: #5d6a79;
+
+  /* ── Accent ── */
+  --lyra-color-accent-slate-soft: #ECEFF3;
+  --lyra-color-accent-slate-strong: #5d6a79;
+  --lyra-color-accent-red-soft: #FFE0E0;
+  --lyra-color-accent-red-strong: #BD2A2A;
+  --lyra-color-accent-orange-soft: #FFE5CC;
+  --lyra-color-accent-orange-strong: #A85000;
+  --lyra-color-accent-yellow-soft: #fff3ad;
+  --lyra-color-accent-yellow-strong: #8e6800;
+  --lyra-color-accent-lime-soft: #E4F6BB;
+  --lyra-color-accent-lime-strong: #4e760c;
+  --lyra-color-accent-green-soft: #d2f4d5;
+  --lyra-color-accent-green-strong: #23722D;
+  --lyra-color-accent-teal-soft: #C8EDEF;
+  --lyra-color-accent-teal-strong: #11737c;
+  --lyra-color-accent-blue-soft: #d6e4ff;
+  --lyra-color-accent-blue-strong: #2D5BB9;
+  --lyra-color-accent-purple-soft: #e6e0ff;
+  --lyra-color-accent-purple-strong: #634DBD;
+  --lyra-color-accent-pink-soft: #ffe0f5;
+  --lyra-color-accent-pink-strong: #B03887;
+
+  /* ── Border Radius ── */
+  --lyra-radius-none: 0px;
+  --lyra-radius-xs: 4px;
+  --lyra-radius-sm: 6px;
+  --lyra-radius-md: 8px;
+  --lyra-radius-lg: 12px;
+  --lyra-radius-xl: 16px;
+  --lyra-radius-round: 999px;
+
+  /* ── Spacing (4px base unit) ── */
+  --lyra-spacing-0: 0px;
+  --lyra-spacing-05: 2px;
+  --lyra-spacing-1: 4px;
+  --lyra-spacing-2: 8px;
+  --lyra-spacing-3: 12px;
+  --lyra-spacing-4: 16px;
+  --lyra-spacing-5: 20px;
+  --lyra-spacing-6: 24px;
+  --lyra-spacing-7: 28px;
+  --lyra-spacing-8: 32px;
+  --lyra-spacing-9: 36px;
+  --lyra-spacing-10: 40px;
+
+  /* ── Border Width ── */
+  --lyra-border-none: 0px;
+  --lyra-border-default: 1px;
+  --lyra-border-md: 2px;
+  --lyra-border-lg: 4px;
+}
+
+/* ════════════════════════════════════════════════════
+   Lyra Dark Theme
+   Applied when [data-theme="dark"] is on a parent element
+   ════════════════════════════════════════════════════ */
+
+[data-theme="dark"] {
+  /* ── Background ── */
+  --lyra-color-bg-surface-base: #1f1f1e;
+  --lyra-color-bg-surface-canvas: #141414;
+  --lyra-color-bg-surface-container: #1f1f1e;
+  --lyra-color-bg-surface-container-subtle: #262626;
+  --lyra-color-bg-surface-shell: #2e2e2e;
+  --lyra-color-bg-surface-backdrop: rgba(0, 0, 0, 0.24);
+  --lyra-color-bg-surface-overlay: #2e2e2e;
+  --lyra-color-bg-surface-inverse: #eceff3;
+  --lyra-color-bg-primary: #166cca;
+  --lyra-color-bg-secondary: rgba(255, 255, 255, 0.04);
+  --lyra-color-bg-destructive: #bd2a2a;
+  --lyra-color-bg-control: #1f1f1e;
+  --lyra-color-bg-control-subtle: rgba(255, 255, 255, 0.04);
+  --lyra-color-bg-field: rgba(255, 255, 255, 0.04);
+  --lyra-color-bg-ai: rgba(143, 115, 227, 0.08);
+  --lyra-color-bg-disabled: rgba(255, 255, 255, 0.04);
+  --lyra-color-bg-none: rgba(255, 255, 255, 0.00);
+  --lyra-color-bg-active-strong: #4896ec;
+  --lyra-color-bg-active-moderate: rgba(72, 150, 236, 0.20);
+  --lyra-color-bg-active-subtle: rgba(72, 150, 236, 0.12);
+  --lyra-color-bg-conversation-ai: rgba(255, 255, 255, 0.04);
+  --lyra-color-bg-conversation-agent: rgba(44, 138, 242, 0.18);
+  --lyra-color-bg-conversation-customer: #0f2a13;
+  --lyra-color-bg-conversation-user: rgba(44, 138, 242, 0.18);
+
+  /* ── Foreground / Text ── */
+  --lyra-color-fg-default: rgba(255, 255, 255, 0.80);
+  --lyra-color-fg-secondary: rgba(255, 255, 255, 0.60);
+  --lyra-color-fg-action: #acb7c3;
+  --lyra-color-fg-disabled: rgba(255, 255, 255, 0.20);
+  --lyra-color-fg-link: #a7d0fe;
+  --lyra-color-fg-inverse: #1f1f1e;
+  --lyra-color-fg-inverse-disabled: rgba(0, 0, 0, 0.30);
+  --lyra-color-fg-on-primary: #ffffff;
+  --lyra-color-fg-on-destructive: #ffffff;
+  --lyra-color-fg-active-subtle: #0c2845;
+  --lyra-color-fg-active-strong: #a7d0fe;
+
+  /* ── Border ── */
+  --lyra-color-border-subtle: rgba(255, 255, 255, 0.10);
+  --lyra-color-border-soft: rgba(255, 255, 255, 0.16);
+  --lyra-color-border-medium: rgba(255, 255, 255, 0.32);
+  --lyra-color-border-strong: rgba(255, 255, 255, 0.46);
+  --lyra-color-border-disabled: rgba(255, 255, 255, 0.10);
+  --lyra-color-border-active: #4896ec;
+  --lyra-color-border-field-ai: #a998e7;
+  --lyra-color-border-inverse: rgba(0, 0, 0, 0.80);
+  --lyra-color-border-none: rgba(255, 255, 255, 0.00);
+  --lyra-color-border-focus-default: #facb33;
+  --lyra-color-border-focus-inverse: #185ba4;
+
+  /* ── Status ── */
+  --lyra-color-status-success-strong: #64b96f;
+  --lyra-color-status-success-medium: #23722d;
+  --lyra-color-status-success-subtle: rgba(33, 116, 44, 0.20);
+  --lyra-color-status-info-strong: #789fed;
+  --lyra-color-status-info-medium: #2d5bb9;
+  --lyra-color-status-info-subtle: rgba(37, 88, 193, 0.20);
+  --lyra-color-status-critical-strong: #fa7f7f;
+  --lyra-color-status-critical-medium: #bd2a2a;
+  --lyra-color-status-critical-subtle: rgba(227, 69, 69, 0.12);
+  --lyra-color-state-bg-hover-critical-subtle: rgba(227, 69, 69, 0.18);
+  --lyra-color-state-bg-pressed-critical-subtle: rgba(227, 69, 69, 0.24);
+  --lyra-color-status-warning-strong: #facb33;
+  --lyra-color-status-warning-medium: #8e6800;
+  --lyra-color-status-warning-subtle: rgba(142, 104, 0, 0.20);
+
+  /* ── State ── */
+  --lyra-color-state-bg-hover-opacity: rgba(255, 255, 255, 0.06);
+  --lyra-color-state-bg-pressed-opacity: rgba(255, 255, 255, 0.12);
+  --lyra-color-state-bg-hover-secondary: rgba(255, 255, 255, 0.10);
+  --lyra-color-state-bg-pressed-secondary: rgba(255, 255, 255, 0.16);
+  --lyra-color-state-bg-hover-active-subtle: rgba(72, 150, 236, 0.18);
+  --lyra-color-state-bg-pressed-active-subtle: rgba(72, 150, 236, 0.24);
+  --lyra-color-state-bg-hover-active-strong: #a7d0fe;
+  --lyra-color-state-bg-pressed-active-strong: #d3e6fd;
+  --lyra-color-state-bg-hover-primary: #185ba4;
+  --lyra-color-state-bg-pressed-primary: #164479;
+  --lyra-color-state-bg-hover-destructive: #a32424;
+  --lyra-color-state-bg-pressed-destructive: #8a1f1f;
+  --lyra-color-state-border-hover-neutral: rgba(255, 255, 255, 0.80);
+
+  /* ── Avatar ── */
+  --lyra-color-avatar-default-bg: #5d6a79;
+
+  /* ── Accent ── */
+  --lyra-color-accent-slate-soft: #49515a;
+  --lyra-color-accent-slate-strong: #d0d6dc;
+  --lyra-color-accent-red-soft: #a32424;
+  --lyra-color-accent-red-strong: #ffb8b8;
+  --lyra-color-accent-orange-soft: #7d420c;
+  --lyra-color-accent-orange-strong: #ffcc9e;
+  --lyra-color-accent-yellow-soft: #674b13;
+  --lyra-color-accent-yellow-strong: #ffe680;
+  --lyra-color-accent-lime-soft: #446311;
+  --lyra-color-accent-lime-strong: #c9ea80;
+  --lyra-color-accent-green-soft: #1f5c27;
+  --lyra-color-accent-green-strong: #b0e8b7;
+  --lyra-color-accent-teal-soft: #1b636a;
+  --lyra-color-accent-teal-strong: #aae0e5;
+  --lyra-color-accent-blue-soft: #264c97;
+  --lyra-color-accent-blue-strong: #b9cef8;
+  --lyra-color-accent-purple-soft: #4e39a8;
+  --lyra-color-accent-purple-strong: #d1c9f2;
+  --lyra-color-accent-pink-soft: #91296e;
+  --lyra-color-accent-pink-strong: #fccaeb;
+
+  /* Tailwind class overrides for dark mode */
+  color-scheme: dark;
+}
+
+/* Utility classes for state layers in dark mode */
+[data-theme="dark"] .hover\:bg-lyra-state-hover:hover {
+  background-color: rgba(255, 255, 255, 0.06);
+}
+[data-theme="dark"] .active\:bg-lyra-state-pressed:active {
+  background-color: rgba(255, 255, 255, 0.12);
+}
+[data-theme="dark"] .focus-visible\:ring-lyra-border-focus {
+  --tw-ring-color: #facb33;
+}
+
+/* ════════════════════════════════════════════════════
+   Lyra Typography Scale (Inter)
+   From Figma: Lyra Foundations (Beta)
+   ════════════════════════════════════════════════════ */
+
+/* Every class in this section sets font-size/line-height/font-weight/
+   letter-spacing but, until now, never font-family — despite this whole
+   section literally being titled "(Inter)" above. In practice every
+   consumer's text still rendered in Inter, but only because each consuming
+   app happens to also declare its own `body { font-family: "Inter", ... }`
+   (e.g. agent-next-gen-v2's index.css) and every element inherits it — a
+   fragile, easy-to-miss dependency that lives OUTSIDE this design system
+   rather than in it. Declaring it once, here, directly on every typography
+   class makes this the actual, self-contained "font used for the rest of
+   the UI in lyra-ui" (per explicit request) — any element using one of
+   these classes is correctly set in Inter regardless of whether (or how)
+   the consuming app happens to set body-level font-family, rather than
+   depending on inheritance. Same stack as tailwind-preset.ts's `fontFamily.
+   sans` (and this repo's own tailwind.config.js), so the computed value is
+   unchanged everywhere this already worked — this only closes the gap for
+   any element/context where inheritance was silently NOT reaching. */
+.lyra-heading-2xl, .lyra-heading-xl, .lyra-heading-lg, .lyra-heading-md,
+.lyra-heading-sm, .lyra-heading-xs, .lyra-label, .lyra-body-lg,
+.lyra-body-lg-emphasis, .lyra-body-md, .lyra-body-md-emphasis, .lyra-body-sm,
+.lyra-body-sm-emphasis, .lyra-body-xs, .lyra-body-xs-emphasis {
+  font-family: "Inter", ui-sans-serif, system-ui, -apple-system, sans-serif;
+}
+
+/* Headings */
+/* 2xl added for DashboardCard's metric numbers — every existing heading
+   tier (xl and below) was designed for section/card titles, not a large
+   standalone stat figure; xl (24px/500) read too small and too light next
+   to a "Metric Name" caption underneath it. One step up in both size and
+   weight, kept as its own preset (not a one-off className override) so any
+   future stat/metric display reuses the same value instead of guessing at
+   a bespoke size again. (Briefly lowered to 600 under the mistaken
+   assumption this token drove the dashboard greeting's "Good afternoon,
+   John" header — it doesn't, that's `PageHeader`'s title, `lyra-heading-lg`
+   below — reverted back to 700 here.) */
+.lyra-heading-2xl { font-size: 28px; line-height: 32px; font-weight: 700; letter-spacing: -0.02rem; }
+.lyra-heading-xl { font-size: 24px; line-height: 28px; font-weight: 500; letter-spacing: -0.02rem; }
+/* lg — the tier `PageHeader`'s own `<h1>` title uses (page-header.tsx) for
+   every page/record header title in the app, e.g. the Desk dashboard's
+   "Good afternoon, {name}" greeting. Weight raised 500→600 per explicit
+   request, at this shared token level so every `PageHeader` title (and any
+   other consumer of this same preset) changes consistently rather than a
+   one-off override on a single call site. */
+.lyra-heading-lg { font-size: 20px; line-height: 24px; font-weight: 600; letter-spacing: -0.01rem; }
+.lyra-heading-md { font-size: 16px; line-height: 24px; font-weight: 500; letter-spacing: -0.01rem; }
+.lyra-heading-sm { font-size: 14px; line-height: 20px; font-weight: 500; letter-spacing: 0; }
+.lyra-heading-xs { font-size: 12px; line-height: 16px; font-weight: 500; letter-spacing: 0.01rem; }
+
+/* Label
+   Defined before the Body block below on purpose: Label is the default
+   typography `<Label>` applies to itself (see label.tsx), and some
+   consumers (e.g. Checkbox) override it with a `.lyra-body-*` className to
+   get regular-weight option text instead of emphasized field-label text.
+   Both classes end up on the same element in that case, and with equal
+   specificity the *later* rule in the cascade wins — so `.lyra-label` has
+   to come first, or a consumer's `.lyra-body-md` override silently loses
+   to it (as happened with Checkbox/CheckboxGroup option labels rendering
+   at weight 500 instead of the intended 400). */
+.lyra-label { font-size: 14px; line-height: 20px; font-weight: 500; letter-spacing: 0; }
+
+/* Body */
+.lyra-body-lg          { font-size: 16px; line-height: 24px; font-weight: 400; letter-spacing: -0.01rem; }
+.lyra-body-lg-emphasis { font-size: 16px; line-height: 24px; font-weight: 500; letter-spacing: -0.01rem; }
+.lyra-body-md          { font-size: 14px; line-height: 20px; font-weight: 400; letter-spacing: 0; }
+.lyra-body-md-emphasis { font-size: 14px; line-height: 20px; font-weight: 500; letter-spacing: 0; }
+.lyra-body-sm          { font-size: 12px; line-height: 16px; font-weight: 400; letter-spacing: 0.01rem; }
+.lyra-body-sm-emphasis { font-size: 12px; line-height: 16px; font-weight: 500; letter-spacing: 0.01rem; }
+.lyra-body-xs          { font-size: 10px; line-height: 14px; font-weight: 400; letter-spacing: 0.01rem; }
+.lyra-body-xs-emphasis { font-size: 10px; line-height: 14px; font-weight: 500; letter-spacing: 0.01rem; }
+
+/* ════════════════════════════════════════════════════
+   Main container content grid (CSS container query)
+   ════════════════════════════════════════════════════
+   For a row of cards inside a page's main content area (e.g. dashboard
+   summary/stat cards) that needs to collapse to a single column once space
+   gets tight — driven by the ACTUAL AVAILABLE WIDTH of the content area
+   itself, not the browser window. A plain `@media` query only reacts to the
+   window resizing, so it can't catch a side panel/nav opening and shrinking
+   the content area while the window stays the same size; a container query
+   can, because it measures the nearest ancestor container element instead.
+
+   Usage: put `.lyra-container-grid-wrap` on the content-area wrapper (it
+   just establishes the query boundary) and `.lyra-container-grid` on the
+   grid of cards somewhere inside it. Per the CSS container-query spec, an
+   element can't query its own size, so these must be two different
+   elements — usually parent + child, as in this example:
+     <div class="lyra-container-grid-wrap">
+       <div class="lyra-container-grid"> ...cards... </div>
+     </div>
+
+   `.lyra-container-grid` collapses in two ordered stages as its own
+   available width gets tight, not a single row→column jump:
+     1. (≤991px) 2-up grid — `display: grid; grid-template-columns:
+        repeat(2, minmax(0, 1fr))`, wrapping a 3rd/4th card onto a second
+        row instead of squeezing all of them into a still-too-narrow row.
+        If the total card count is odd, the trailing lone card (last
+        child, odd position — `:last-child:nth-child(odd)`, true for
+        exactly this case regardless of how many cards there are) spans
+        both columns (`grid-column: 1 / -1`) instead of sitting half-width
+        with an empty gap beside it.
+     2. (≤768px) Full single column — back to `display: flex;
+        flex-direction: column`, since at this point the whole row
+        genuinely needs to *become* a column (what `flex-direction` models
+        directly), not just a track-count change.
+   The unconstrained (wide) state is plain Flexbox (`flex-direction: row`).
+   The name is kept as-is (it's the established, referenced-elsewhere
+   pattern name) despite the implementation switching between Grid and
+   Flexbox across the three stages. */
+/* Keeps an element scrollable (overflow-y: auto/scroll still works, wheel/
+   trackpad/keyboard scrolling all still work) while hiding the browser's
+   own scrollbar chrome — e.g. LeftNav's rail, where a visible scrollbar
+   track/thumb clutters a narrow 256px surface. `scrollbar-width`/
+   `-ms-overflow-style` cover Firefox/legacy Edge; the `::-webkit-scrollbar`
+   rule covers Chrome/Safari/modern Edge — both are needed, there's no
+   single cross-browser property for this. */
+.lyra-scrollbar-hide {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.lyra-scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+.lyra-container-grid-wrap {
+  container-type: inline-size;
+}
+/* `min-width: 0` on children keeps a long/unbreakable child (e.g. a wide
+   table) from pushing the row wider than its container — needed under both
+   Flexbox (overrides `min-width: auto`) and Grid (same default there too),
+   so it's left unscoped to either display mode. */
+.lyra-container-grid {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+}
+.lyra-container-grid > * {
+  flex: 1 1 0%;
+  min-width: 0;
+}
+@container (max-width: 991px) {
+  .lyra-container-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  /* A lone trailing card in an odd-count row (last child AND at an odd
+     1-indexed position — the only way a child ends up alone in the final
+     row of a 2-column grid, regardless of the total count) spans both
+     columns instead of sitting half-width with an empty gap beside it. */
+  .lyra-container-grid > *:last-child:nth-child(odd) {
+    grid-column: 1 / -1;
+  }
+}
+@container (max-width: 768px) {
+  .lyra-container-grid {
+    display: flex;
+    flex-direction: column;
+  }
+  /* `.lyra-container-grid > *`'s own `flex: 1 1 0%` (above) exists so
+     cards evenly split the ROW's width in the wide, flex-row stage — but
+     that rule is otherwise unconditional, so without this override it
+     stays in effect here too. Once `flex-direction` flips to `column`,
+     the main axis becomes vertical, and `flex-basis: 0%` then governs
+     each card's HEIGHT instead: cards shrink toward their minimum content
+     height (ignoring whatever height they'd normally render at) rather
+     than keeping their natural size, because flex-basis on the main axis
+     always wins over a plain `height` property. `flex: none` resets
+     grow/shrink/basis back to their initial values for this stage only,
+     so a stacked card just uses its own intrinsic/explicit height again —
+     confirmed via the `Foundations/Breakpoints` page's `ContainerGrid`
+     demo, where cards visibly shrank at this stage before this fix. */
+  .lyra-container-grid > * {
+    flex: none;
+  }
+}
+
+/* ════════════════════════════════════════════════════
+   Form grid (CSS container query)
+   ════════════════════════════════════════════════════
+   Same mechanism as `.lyra-container-grid` above (container-type boundary +
+   a flex-row that collapses in two ordered stages), used by `FormTemplate`
+   (form-template.tsx) — but with its own, narrower thresholds: ≤768px for
+   the 2-up grid stage (vs. `.lyra-container-grid`'s ≤991px) and ≤480px for
+   the single-column stage (vs. `.lyra-container-grid`'s ≤768px). Kept as
+   its own separate class rather than changing `.lyra-container-grid`'s
+   thresholds directly so `AgentDashboard`'s card rows (which want the
+   original 991/768 thresholds) are unaffected. */
+.lyra-form-grid-wrap {
+  container-type: inline-size;
+}
+.lyra-form-grid {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+}
+.lyra-form-grid > * {
+  flex: 1 1 0%;
+  min-width: 0;
+}
+@container (max-width: 768px) {
+  .lyra-form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@container (max-width: 480px) {
+  .lyra-form-grid {
+    display: flex;
+    flex-direction: column;
+  }
+  /* Same fix as `.lyra-container-grid`'s own ≤768px stage above — see
+     that comment for the full explanation. `.lyra-form-grid > *`'s
+     `flex: 1 1 0%` (above) is only meant for the wide flex-row stage; left
+     unchecked here it also governs each field's HEIGHT once
+     flex-direction is column, shrinking it toward its minimum content
+     size instead of its natural height. */
+  .lyra-form-grid > * {
+    flex: none;
+  }
+}
+
+/* ════════════════════════════════════════════════════
+   Card split (CSS container query)
+   ════════════════════════════════════════════════════
+   For a `DashboardCard`'s `children` body that splits into two side-by-side
+   regions (e.g. a couple of stat blocks beside a chart/empty-state area) —
+   row layout by default, stacking to a column once the card's own available
+   width gets tight. `.lyra-card-split-divider` hides the vertical divider
+   between the two regions in the stacked state, where a vertical rule no
+   longer makes sense.
+
+   Usage:
+     <div class="lyra-card-split-wrap">
+       <div class="lyra-card-split">
+         <div>...stat blocks...</div>
+         <Separator orientation="vertical" class="lyra-card-split-divider" />
+         <div class="lyra-card-split-chart">...chart/empty state...</div>
+       </div>
+     </div> */
+.lyra-card-split-wrap {
+  container-type: inline-size;
+}
+.lyra-card-split {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  gap: 1.5rem;
+}
+.lyra-card-split-divider {
+  display: block;
+}
+/* Optional — for whichever region should have a fixed width in the row
+   state (e.g. a column of stat blocks beside a chart) but grow to full
+   width once stacked, where a fixed width would otherwise leave it narrow
+   and off-center. */
+.lyra-card-split-fixed {
+  width: 12rem;
+  flex-shrink: 0;
+}
+/* Optional — for a region that needs an explicit pixel height (e.g. a
+   `Chart`/`BarChart`, which needs a real height to render into — see
+   chart.tsx; `align-items: stretch` alone only stretches it to match
+   whatever its sibling's own height happens to be, which isn't
+   necessarily enough room for legible axes/legend).
+
+   Also owns `flex-grow`/`flex-basis` itself (not left to a `flex-1`
+   utility class on the consumer's own element) for a specific reason: in
+   the row state this needs `flex: 1 1 0%` so it fills the remaining row
+   *width* beside `.lyra-card-split-fixed` — but `flex-basis` is what
+   actually governs a flex item's size on the main axis, and once
+   `.lyra-card-split` stacks to a column, the main axis becomes vertical,
+   so a `flex-basis: 0%` left in place would override this class's own
+   explicit `height` right back down toward zero (the parent column has
+   no defined height to `flex-grow` into, since it's sized only by
+   summing its own children) — exactly what happened the first time this
+   was tried with `className="lyra-card-split-chart flex min-w-0 flex-1"`
+   on the consumer side: the chart rendered into a near-collapsed box
+   regardless of what height this class specified, all its categories
+   crammed into a few visible pixels. `flex: none` once stacked (below)
+   is what actually fixes that — the explicit `height` here is only ever
+   honored when nothing else is fighting it for the main axis.
+
+   420px in the row state; 340px once stacked — both checked against
+   `DashboardCard`'s own `max-h-[600px]` body cap (dashboard-card.tsx):
+   420px (row) is comfortably under it since it's the row's only
+   height-defining child; 340px (stacked) is checked against the *sum*
+   with `.lyra-card-split-fixed`'s own stat-block height (now sitting
+   above it, not beside it) plus this section's own gap/padding — the
+   incident this was added for (Outbound-Campaigns' Monitor "Outbound
+   Email" card) hit exactly that sum exceeding 600px once its chart was
+   hardcoded to a flat 420px in every state. */
+.lyra-card-split-chart {
+  flex: 1 1 0%;
+  min-width: 0;
+  height: 420px;
+}
+/* Optional — for two (or more) plain flexible regions that should split
+   the row EVENLY rather than each taking its own natural content width
+   (`.lyra-card-split`'s own default when neither `-fixed` nor `-chart` is
+   used, since its usual pairing is one fixed column beside one flexible
+   one — see the file-level comment above). Added for agent-next-gen-v1's
+   Customer Information Overview tab: a compact field list beside the
+   "Latest Interaction" card rendered visibly unequal widths (the card's
+   own padding + longer text naturally wanting more room) before this
+   existed. Same `flex: 1 1 0%; min-width: 0;` `.lyra-container-grid > *`/
+   `.lyra-form-grid > *` already bake in by default — `.lyra-card-split`
+   doesn't, so this is the equivalent opt-in for it. */
+.lyra-card-split-even {
+  flex: 1 1 0%;
+  min-width: 0;
+}
+@container (max-width: 480px) {
+  .lyra-card-split {
+    flex-direction: column;
+  }
+  .lyra-card-split-divider {
+    display: none;
+  }
+  .lyra-card-split-fixed {
+    width: 100%;
+  }
+  .lyra-card-split-chart {
+    flex: none;
+    width: 100%;
+    height: 340px;
+  }
+  /* Same fix as `.lyra-container-grid > *`/`.lyra-form-grid > *`'s own
+     stacked-stage reset — see either's comment for the full explanation.
+     Left unchecked, `flex-basis: 0%` (from the row-stage rule above)
+     would govern each column's HEIGHT once `.lyra-card-split` stacks to a
+     column, shrinking it toward its minimum content height instead of its
+     natural size. */
+  .lyra-card-split-even {
+    flex: none;
+    width: 100%;
+  }
+}
+
+/* ════════════════════════════════════════════════════
+   Metric row (CSS container query)
+   ════════════════════════════════════════════════════
+   Same rationale as `.lyra-container-grid-wrap` above, applied to
+   `DashboardCard`'s metric row (`dashboard-card.tsx`): a metric card can
+   end up narrow for reasons that have nothing to do with the browser
+   window (a sidebar widget, a dense grid layout, a docked panel), so it
+   needs to adapt its 1-4 metrics once its own actual available width gets
+   tight — not the viewport's. Three ordered stages as width shrinks
+   (explicitly requested in that order, not something to collapse into a
+   single breakpoint):
+
+     1. (≤768px) The sparkline moves from beside each metric's value/trend
+        text to below it (`.lyra-metric-content` row → column). The row of
+        metrics itself is untouched — still one flex row, however many
+        metrics there are — this stage only reclaims the width a
+        side-by-side sparkline was taking.
+     2. (≤550px) The row becomes a strict 2-column grid (`.lyra-metric-row`
+        flex → grid, `repeat(2, minmax(0,1fr))`), wrapping 3-4 metrics onto
+        a second row. A flat `Separator` sibling can't represent "between
+        column 1 and 2" *and* "between row 1 and 2" at once, so both
+        dividers hide here and a real `gap` takes over spacing instead —
+        the same convention "contained" metrics (bordered boxes, no
+        dividers) already used at every width.
+     3. (≤360px) The grid drops to 1 column — every metric fully stacked.
+        Unlike stage 2, there's no "which pair of neighbors" ambiguity in
+        a single column, so `.lyra-metric-row-divider--horizontal` comes
+        back ("divided" only; "contained" metrics are already separated by
+        their own border).
+
+   Stage 1's 768px now matches `.lyra-container-grid`'s own single-column
+   threshold exactly (both are "collapse once space gets tight" at heart),
+   rather than an independently-rounded value — kept as its own separate
+   `@container` rule regardless, since this system layers two more,
+   narrower stages on top that a plain row-of-cards doesn't need.
+
+   Usage: `.lyra-metric-row-wrap` goes on the metric row's own container
+   boundary (`DashboardCard` puts it on the `Container` div itself when
+   `metrics` is set); `.lyra-metric-row` on the row/grid of metrics inside
+   it; `.lyra-metric-content` on each metric's own value/trend+sparkline
+   wrapper (`MetricContent` in `dashboard-card.tsx`) and `.lyra-metric-
+   sparkline` on the `Sparkline`'s own wrapper div, both queried against
+   the same ancestor container as the row itself. `.lyra-metric-row-item`
+   ("divided" only — "contained" boxes carry their own uniform `p-4`
+   already) owns the same left/right padding Tailwind's `first:pl-0
+   last:pr-0` used to provide in row mode, but as plain CSS instead of a
+   Tailwind pseudo-class utility, specifically so it can be reset once
+   metrics no longer sit in one strict row (stage 2 onward, where a real
+   `gap` replaces item-edge padding entirely). */
+.lyra-metric-row-wrap {
+  container-type: inline-size;
+}
+.lyra-metric-row {
+  display: flex;
+  flex-direction: row;
+}
+/* "divided" variant only — the vertical Separator between metrics relies on
+   zero flex gap in row mode (the Separator + each item's own px-4 provide
+   all the spacing); once stacked, there's no Separator doing that job in
+   the cross axis, so a real gap is needed instead. "contained" doesn't
+   use this class — its own `gap-3` Tailwind utility already looks right
+   at every stage, since a single-value `gap` isn't direction specific. */
+.lyra-metric-row--divided {
+  gap: 0;
+}
+.lyra-metric-row-item {
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+.lyra-metric-row-item:first-child {
+  padding-left: 0;
+}
+.lyra-metric-row-item:last-child {
+  padding-right: 0;
+}
+.lyra-metric-row-divider--horizontal {
+  display: none;
+}
+.lyra-metric-row-divider--vertical {
+  display: block;
+}
+.lyra-metric-content {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+.lyra-metric-sparkline {
+  width: 5rem; /* matches Tailwind's w-20 */
+  height: 2.5rem; /* matches Tailwind's h-10 */
+  flex-shrink: 0;
+}
+
+/* Stage 1 — sparkline below the text; row arrangement unchanged. */
+@container (max-width: 768px) {
+  .lyra-metric-content {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .lyra-metric-sparkline {
+    width: 100%; /* was a fixed 5rem for the beside-text layout — full width once it's its own line */
+  }
+}
+
+/* Stage 2 — 2-up grid; dividers give way to a real gap. */
+@container (max-width: 550px) {
+  .lyra-metric-row {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem; /* matches Tailwind's gap-3 — same value "contained" already uses unconditionally */
+  }
+  .lyra-metric-row-item {
+    padding-left: 0;
+    padding-right: 0;
+  }
+  .lyra-metric-row-divider--horizontal,
+  .lyra-metric-row-divider--vertical {
+    display: none;
+  }
+  /* Compact override — a row of ≤2 metrics (e.g. DashboardQueue's per-card
+     Contacts/Agents pair) is already 2 columns whether it's a flex row or
+     a 2-up grid, so Stage 2's grid conversion buys it nothing and only
+     costs it the "divided" variant's vertical Separator — confirmed live:
+     DashboardQueue's cards (2 metrics each, narrow by design since up to
+     5 sit side by side in a row) sat well under 550px container width and
+     lost their divider entirely, even though two numbers with a thin line
+     between them fit comfortably at that width. Stay in row mode and keep
+     the divider visible the whole way down instead — same "two classes
+     beats one, no `!important`" specificity trick the Stage 3 compact
+     override below already uses. */
+  .lyra-metric-row.lyra-metric-row--compact {
+    display: flex;
+  }
+  .lyra-metric-row.lyra-metric-row--compact .lyra-metric-row-item {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  .lyra-metric-row.lyra-metric-row--compact .lyra-metric-row-item:first-child {
+    padding-left: 0;
+  }
+  .lyra-metric-row.lyra-metric-row--compact .lyra-metric-row-item:last-child {
+    padding-right: 0;
+  }
+  .lyra-metric-row.lyra-metric-row--compact .lyra-metric-row-divider--vertical {
+    display: block;
+  }
+}
+
+/* Stage 3 — 1-up grid; horizontal Separator comes back (unambiguous with
+   only one column). */
+@container (max-width: 360px) {
+  .lyra-metric-row {
+    grid-template-columns: 1fr;
+  }
+  .lyra-metric-row-divider--horizontal {
+    display: block;
+  }
+}
+
+/* Compact override, continued — Stage 2 above already keeps a ≤2-metric
+   row in flex/row mode the whole way down (it never enters grid mode at
+   all now), so this block is mostly a no-op belt-and-suspenders for
+   `grid-template-columns` (harmless on a flex container). What it still
+   does for real: cancels Stage 3's unconditional horizontal-Separator
+   re-enable above, which isn't scoped to grid mode and would otherwise
+   turn on a horizontal divider inside a compact row that was never
+   stacked into a single column to begin with. */
+@container (max-width: 360px) {
+  .lyra-metric-row.lyra-metric-row--compact {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .lyra-metric-row.lyra-metric-row--compact .lyra-metric-row-divider--horizontal {
+    display: none;
+  }
+}
+
+/* Single-metric override — a row of exactly one metric needs to always
+   fill the full row width, at every stage. Without this, Stage 2's
+   unconditional `grid-template-columns: repeat(2, minmax(0, 1fr))` (above)
+   still applies even with only one child in the row: default CSS Grid
+   auto-placement fills column 1 and simply leaves column 2 empty rather
+   than stretching a lone item across both — confirmed live via a 1-up
+   "contained" metric card rendering at roughly half width (with a
+   truncated subhead) well above the 360px Stage 3 threshold `--compact`
+   covers. No `@container` guard needed: `grid-column` is a no-op outside
+   grid mode, so this is harmless in the wide flex-row stage (where a lone
+   item already stretches via its own `flex: 1`) and only takes effect once
+   Stage 2 or 3 actually switches the row to `display: grid`. Set by
+   `MetricRow` when `metrics.length === 1` — coexists fine with
+   `--compact` (also true for a 1-item row, since `isCompact` is
+   `metrics.length <= 2`): whichever column count the row ends up with,
+   `1 / -1` always spans all of them. */
+.lyra-metric-row--single > * {
+  grid-column: 1 / -1;
+}
+
+/* ════════════════════════════════════════════════════
+   Tab overflow (CSS container query)
+   ════════════════════════════════════════════════════
+   `TabList`'s native `overflowMenu` prop (`tabs.tsx`): once its own actual
+   available width drops to 400px or below, collapse the tab row down to
+   exactly two full-width slots — the active tab, and a "{n} More" dropdown
+   holding every other tab in its original order (e.g. a record detail
+   panel's Overview/Details/Tickets/Accounts/... tab bar). Same "react to
+   this component's own width, not the viewport" rationale as
+   `.lyra-container-grid-wrap`/`.lyra-metric-row-wrap`/`.lyra-channel-tab-
+   list-wrap` above — a docked side panel, a narrow card, or any other
+   layout squeeze can make this width small for reasons that have nothing
+   to do with the browser window. (Originally 991px; lowered to 400px per
+   explicit request once `Tab`'s own shrink-disabling + `max-w-[22ch]` cap
+   — see tabs.tsx — gave the "wide" row's chevron/scroll state real room to
+   work below the old threshold instead of the row always collapsing
+   first.)
+
+   `.lyra-tab-overflow-wrap` (the outer wrapper `TabList` renders whenever
+   `overflowMenu` is set) owns the container query boundary; the real
+   `role="tablist"` row gets `.lyra-tab-overflow-full` (hidden below
+   400px — it stays in the DOM so its buttons can still be `.click()`ed
+   programmatically when a dropdown entry is chosen, same as this file's
+   own arrow-key navigation does); the two-slot collapsed row gets
+   `.lyra-tab-overflow-collapsed` (the reverse — hidden above 400px, shown
+   as a flex row below it).
+
+   `.lyra-tab-overflow-stretch` is `.lyra-tab-overflow-full`'s sibling for a
+   `TabList` with 2 tabs or fewer (`tabs.tsx`'s `allowOverflowCollapse`) —
+   collapsing 2 tabs down to "the active one + a 1-item dropdown" never
+   actually saves space (see that const's own doc comment), so below 400px
+   this class stretches both tabs to fill the row evenly instead of hiding
+   either of them — the same equal-width look the (unused, for this case)
+   collapsed row would have had, just as two real, independently-clickable
+   tabs rather than one visible tab + a dropdown standing in for the other.
+   Every other collapse rule below is unaffected by a `TabList` opting into
+   this instead — `.lyra-tab-overflow-full`/`-collapsed` and
+   `.lyra-tab-overflow-stretch` are mutually exclusive per render (`tabs.tsx`
+   only ever puts one of the first two, or the third, on the row), never
+   layered together.
+
+   Every rule below is scoped with the `.lyra-tab-overflow-wrap` ancestor
+   (`.lyra-tab-overflow-wrap .lyra-tab-overflow-full`, not just
+   `.lyra-tab-overflow-full` on its own) rather than left as bare single
+   classes. `TabList`'s own row already carries Tailwind's `flex` utility
+   (`display: flex`) alongside `.lyra-tab-overflow-full` on the same
+   element — a bare `.lyra-tab-overflow-full { display: none }` has the
+   exact same specificity as `.flex { display: flex }`, so whichever rule
+   happens to land later in the final bundle wins, and that ordering isn't
+   something this component controls (confirmed live: it worked in
+   Storybook's build but silently lost to `.flex` in `agent-next-gen-v1`'s
+   Vite build, which happened to emit Tailwind's utilities after this
+   file). The two-class ancestor selector has higher specificity than a
+   single-class utility regardless of source order, so it wins
+   unconditionally instead of by bundler-order coincidence. */
+.lyra-tab-overflow-wrap {
+  container-type: inline-size;
+}
+.lyra-tab-overflow-wrap .lyra-tab-overflow-collapsed {
+  display: none;
+}
+/* Not gated inside the `@container` block below — `.lyra-tab-overflow-
+   collapsed` only ever actually renders as `display: flex` at ≤400px in
+   the first place (the rule right above this one), so this has no visual
+   effect until that's already true; no need to duplicate the same width
+   condition a second time. Plain, hand-written CSS rather than a Tailwind
+   arbitrary-variant utility (`[&>*]:flex-1`, what this used to be, applied
+   directly on the element in tabs.tsx) for the same reason
+   `.lyra-tab-overflow-stretch`'s own matching rule below is plain CSS —
+   see that rule's own doc comment: reported as not actually stretching a
+   `ChannelTab`'s slot in practice, and moving off the JIT-generated
+   arbitrary-variant path removes that whole class of doubt rather than
+   continuing to chase why it wasn't landing. `> *` grows whatever this
+   row's direct child actually is — a plain `Tab`'s own button, or
+   `ChannelTab`'s wrapper `<span>` (whose own `[&>*]:w-full`, channel-
+   row.tsx, propagates that growth down into its real button one level
+   further in). `max-width: none` clears `Tab`'s own `max-w-[22ch]` cap at
+   any depth — the active tab's clone (`collapsedRowEl`, tabs.tsx) already
+   gets this via a direct `className` override too, so this is a second,
+   redundant guarantee of the same thing rather than the only source of
+   it. */
+/* NOT scoped under `.lyra-tab-overflow-wrap` like the display-toggle rules
+   above/below — those are specifically the "wide" breakpoint's own
+   CSS-container-query mechanics (`.lyra-tab-overflow-collapsed` stays
+   mounted but CSS-hidden outside `@container (max-width: 400px)`), which
+   only ever applies inside a `.lyra-tab-overflow-wrap` ancestor in the
+   first place. This equal-width-children rule, though, needs to hold
+   whenever `.lyra-tab-overflow-collapsed` renders AT ALL, regardless of
+   which breakpoint mode produced it — `overflowBreakpoint="compact"`
+   (tabs.tsx) renders this exact same row too, conditionally via JS instead
+   of the CSS toggle, inside its OWN wrapper (`compactWrapRef`'s div, which
+   deliberately doesn't carry `.lyra-tab-overflow-wrap` — that class also
+   sets `container-type: inline-size`, "wide" mode's own container-query
+   root, which "compact" mode has no use for and doesn't want). Scoping
+   this rule to `.lyra-tab-overflow-wrap` left "compact" mode's own
+   collapsed row with NONE of this — confirmed live: the active tab and
+   "N More" trigger rendered at their own unequal content widths instead of
+   splitting the row evenly, leaving a visible gap between them and the
+   row's actual right edge. */
+.lyra-tab-overflow-collapsed > * {
+  flex: 1 1 0%;
+}
+.lyra-tab-overflow-collapsed [role="tab"] {
+  max-width: none;
+}
+@container (max-width: 400px) {
+  .lyra-tab-overflow-wrap .lyra-tab-overflow-full {
+    display: none;
+  }
+  .lyra-tab-overflow-wrap .lyra-tab-overflow-collapsed {
+    display: flex;
+  }
+  /* Split into two rules (was one, targeting `[role="tab"]` for both
+     `flex` and `max-width`) — `flex: 1 1 0%` has to land on the row's own
+     DIRECT children to actually grow: flex-grow only distributes extra
+     space from an item's immediate flex parent, and for a plain `Tab`
+     that direct child IS the real `[role="tab"]` button, so the old
+     single rule happened to work there. But `ChannelTab` (channel-
+     row.tsx) wraps that same button in its own `<span>` (for its Outcome
+     popover's anchor), so the real button sits one level *below* the
+     row's actual direct child — telling the deeply-nested button itself
+     to grow had nothing to distribute into, since its own immediate
+     parent (that wrapper span) was never told to grow in the first place
+     (confirmed via screenshot: a 2-tab row with a `ChannelTab` in it
+     stayed at natural width below 400px instead of stretching). `> *`
+     grows whatever the direct child actually is — the plain case's own
+     button, or a composite wrapper's span — and `ChannelTab`'s own span
+     already propagates that growth down into its real button
+     (`.lyra-channel-tab-anchor`, channel-row.tsx — see that class's own
+     definition below). `max-width: none` still targets `[role="tab"]`
+     specifically (at any depth) since that's genuinely where `Tab`'s own
+     `max-w-[22ch]` cap lives, however deep the real button sits. */
+  .lyra-tab-overflow-wrap .lyra-tab-overflow-stretch > * {
+    flex: 1 1 0%;
+  }
+  .lyra-tab-overflow-wrap .lyra-tab-overflow-stretch [role="tab"] {
+    max-width: none;
+  }
+}
+
+/* `ChannelTab`'s own Outcome-popover anchor span (channel-row.tsx) — see
+   that call site's own doc comment for the full "why this exists" story.
+   Short version: this span is `ChannelTab`'s real, single DOM wrapper
+   around its `Tab`; when something upstream (`.lyra-tab-overflow-collapsed`/
+   `-stretch` above) stretches this span itself via `flex: 1 1 0%`, the
+   real `<button>` inside it doesn't automatically grow to match — a plain
+   flex/inline-flex container doesn't hand its children `flex-grow` for
+   free, so the button just sized to its own content and sat flush-left in
+   the now-wider span. `> *` fills whatever real DOM child this span has
+   (always exactly one — `Tab`'s own button) with the space the span
+   itself was given. */
+.lyra-channel-tab-anchor > * {
+  width: 100%;
+}
+
+/* Note: `TabList`'s `overflowBreakpoint="compact"` variant (tabs.tsx) does
+   NOT use a CSS container query like `.lyra-tab-overflow-wrap` above — it
+   measures whether the tabs actually fit via a hidden clone + JS
+   `ResizeObserver` instead, since a fixed pixel threshold tuned for one
+   narrow context (an `InteriorPanel`'s ~200–425px range) is still just a
+   guess that may not match when a *different* set of tab labels actually
+   stops fitting. See tabs.tsx's `overflowBreakpoint` doc comment for the
+   full rationale — no CSS class needed here for that mode. */
+
+/* ════════════════════════════════════════════════════
+   PageHeader breadcrumb collapse
+   ════════════════════════════════════════════════════
+   Same "react to this element's own width" container-query technique as
+   `.lyra-tab-overflow-wrap` above, applied to `PageHeader`'s breadcrumb
+   slot (page-header.tsx): once the slot's own available width drops to
+   480px or below, swap the full parent-crumb trail for a single ellipsis
+   trigger (all parent crumbs collapsed into its popover, via
+   `BreadcrumbEllipsis`'s `items` prop — see breadcrumb.tsx) followed by
+   the current-page title, which truncates with an ellipsis instead of
+   wrapping onto a second line — wrapping is what pushed the title below
+   the crumbs before this existed, which is the behavior this replaces.
+   480px is an approximation (a fixed breakpoint, not an exact "does the
+   text actually overflow" measurement — see CONTRIBUTING.md's CSS
+   container-query pattern note on this tradeoff) chosen to collapse
+   comfortably before a two-or-more-crumb trail plus a merely medium-length
+   title would start crowding the row.
+
+   `.lyra-page-header-breadcrumb-full` (hidden below 480px) and
+   `.lyra-page-header-breadcrumb-collapsed` (the reverse) are both real
+   `Breadcrumb` instances rendered at all times — same reasoning as
+   `.lyra-tab-overflow-full` staying in the DOM above, just for CSS
+   toggling rather than programmatic `.click()`. Scoped with the
+   `.lyra-page-header-breadcrumb-wrap` ancestor, not bare single classes,
+   for the same specificity reason documented on `.lyra-tab-overflow-wrap`
+   above (a bare `.lyra-page-header-breadcrumb-full { display: none }`
+   would tie with Tailwind's `.flex` utility on the same element and could
+   lose depending on bundler-emitted CSS order). */
+.lyra-page-header-breadcrumb-wrap {
+  container-type: inline-size;
+}
+.lyra-page-header-breadcrumb-wrap .lyra-page-header-breadcrumb-collapsed {
+  display: none;
+}
+@container (max-width: 480px) {
+  .lyra-page-header-breadcrumb-wrap .lyra-page-header-breadcrumb-full {
+    display: none;
+  }
+  .lyra-page-header-breadcrumb-wrap .lyra-page-header-breadcrumb-collapsed {
+    display: flex;
+  }
+}
+
+/* ════════════════════════════════════════════════════
+   Page header title-suffix wrap (CSS container query)
+   ════════════════════════════════════════════════════
+   PageHeader's title row (page-header.tsx) — icon/title/subtitle plus
+   `titleSuffix` (e.g. a `ChannelToggleGroup` distinguishing an
+   interaction's open channels) — is a single non-wrapping flex row by
+   default. Fine most of the time, but once this header's own available
+   width gets tight (the interaction record header, once a docked
+   Customer Information panel or app panel eats into it), that row
+   squeezes the customer name/ID down to an unreadable sliver ("La...",
+   "CS-63...") just to keep the channel toggles on the same line —
+   confirmed from a screenshot.
+
+   Below 768px of the header's own width, `titleSuffix` instead drops to
+   its own full-width row directly under the title/subtitle block, so the
+   name/ID get the row's full width back and only the toggles below need
+   to make room for themselves. `container-type: inline-size` always on
+   (not opt-in) — `titleSuffix` has exactly one real consumer today
+   (agent-next-gen-v1's interaction record header) and wrapping below the
+   title is the only sane fallback for ANY content in that slot once space
+   actually runs out; nothing existing wants "truncate the title instead"
+   behavior. The `flex-wrap`/`flex-basis` rules themselves stay scoped
+   inside the `@container` query (not a permanent base rule) so layout
+   above 768px is byte-for-byte unchanged — only single-line-too-tight
+   triggers the wrap, never organic wrapping a little early.
+
+   `.lyra-page-header-actions` (the right-side actions/panel-toggle
+   column) gets `align-self: flex-start` in the same query — the outer
+   row's `items-center` (unchanged, still correct for the normal single-
+   line case) otherwise centers `actions` against the row's FULL height,
+   which once the left side wraps to two lines is no longer just the
+   title's own line — it's the title-plus-wrapped-toggles block combined,
+   so `actions` visually sinks down toward the middle of that taller
+   block instead of staying pinned beside the title itself (confirmed via
+   screenshot: the Customer Information toggle button drifting down
+   between the name and the wrapped channel row instead of staying
+   top-right). `align-self` on just this one flex item overrides the
+   parent's `items-center` without touching how the rest of the row
+   aligns.
+
+   `.lyra-page-header-suffix-divider` is an OPT-IN class (unlike the two
+   above, it's not applied automatically by `PageHeader` itself — a
+   consumer's own `titleSuffix` content opts in, e.g. agent-next-gen-v1's
+   interaction record header, which puts a plain vertical-bar `<div>`
+   before its `ChannelToggleGroup` to separate it from the title while
+   both share one line). Hidden in the same query: once `titleSuffix`
+   wraps to its own row, that divider has nothing left to actually divide
+   — a lone vertical bar floating above the wrapped content read as a
+   rendering glitch rather than a separator (confirmed via screenshot).
+
+   Every rule in the `@container` block below is additionally scoped under
+   `.lyra-page-header-has-suffix` — a modifier `PageHeader` itself only
+   adds when `titleSuffix` is actually passed (page-header.tsx). Originally
+   these fired off `.lyra-page-header-suffix-wrap` alone, i.e. on EVERY
+   `PageHeader`, `titleSuffix` or not: harmless for `.lyra-page-header-left`/
+   `-suffix`/`-suffix-divider` (those selectors simply match nothing without
+   `titleSuffix` in the tree), but `.lyra-page-header-actions` always
+   exists, so its `align-self: flex-start` fired for every consumer whose
+   header narrowed past 768px regardless — confirmed live on
+   agent-next-gen-v2's record header (no `titleSuffix`, just a title +
+   action buttons), whose `actions` visibly jumped from vertically centered
+   against the title to top-aligned at that width, with nothing on the left
+   actually wrapping to justify it. Scoping to `.lyra-page-header-has-suffix`
+   makes this container query a true no-op for any consumer that doesn't
+   use `titleSuffix`, matching what the rest of this comment already
+   describes it as being for. */
+/* `.lyra-page-header-container` — the OUTER wrapper `PageHeader` itself
+   renders (page-header.tsx) around the actual bordered/padded row
+   (`.lyra-page-header-suffix-wrap`) — is what carries `container-type:
+   inline-size` now, not `.lyra-page-header-suffix-wrap` itself. A CSS
+   query container can style its own DESCENDANTS based on its measured
+   size, but never itself — `.lyra-page-header-suffix-wrap` used to BE the
+   container AND the thing every rule below (plus the "actions wraps
+   below" rule further down) needed to restyle based on ITS OWN width,
+   which is exactly the self-referential case `@container` can't do
+   (confirmed live: a rule trying to flip `.lyra-page-header-suffix-wrap`'s
+   own `flex-direction` while it was also the container element itself
+   just silently never matched). Moving `container-type` one level up
+   turns `.lyra-page-header-suffix-wrap` into a genuine descendant of its
+   own query container, the same relationship `.lyra-page-header-left`/
+   `-actions`/etc. below already have — so it can finally be targeted the
+   same way they are. */
+.lyra-page-header-container {
+  container-type: inline-size;
+}
+@container (max-width: 768px) {
+  .lyra-page-header-suffix-wrap.lyra-page-header-has-suffix .lyra-page-header-left {
+    flex-wrap: wrap;
+  }
+  .lyra-page-header-suffix-wrap.lyra-page-header-has-suffix .lyra-page-header-suffix {
+    flex-basis: 100%;
+  }
+  .lyra-page-header-suffix-wrap.lyra-page-header-has-suffix .lyra-page-header-actions {
+    align-self: flex-start;
+  }
+  .lyra-page-header-suffix-wrap.lyra-page-header-has-suffix .lyra-page-header-suffix-divider {
+    display: none;
+  }
+}
+
+/* `actions` (the right-side badge/button cluster) drops to its own row
+   below the title/subtitle block once THIS header's own width crosses
+   400px (lowered from an initial 768px, then 480px, per explicit
+   follow-up requests) —
+   per explicit request/screenshot: a `PageHeader` with a longer
+   title + subtitle plus even a single `actions` `Badge` (agent-next-gen-v2's
+   dashboard — "Good afternoon, {name}" / the date, next to an "N
+   Assignments resolved today" chip, no `titleSuffix` at all) squeezed both
+   the title AND subtitle down to a couple of truncated characters each
+   ("Good a…" / "Tuesday, Au…") the moment `actions` had to share the row
+   with them below that width, rather than the title/subtitle simply
+   getting the row's full width to themselves and `actions` sitting on its
+   own line underneath.
+   Scoped to `:not(.lyra-page-header-has-suffix)` — the `titleSuffix` case
+   just above already has its own separate, previously-tuned "wrap" story
+   (that title's OWN suffix content — e.g. a `ChannelToggleGroup` — drops
+   below the title, `actions` stays pinned top-right on the ORIGINAL row);
+   this rule is deliberately a no-op there so it can't fight that already-
+   working behavior.
+
+   `flex-direction: column` (not `flex-wrap: wrap` — earlier passes at
+   this tried wrap-based techniques, confirmed BROKEN live: the title
+   collapsed to invisible instead of `actions` dropping below it, since
+   `.lyra-page-header-left` carries Tailwind's `flex-1`/`flex-basis: 0%`,
+   which fights any `flex-basis`-based wrap-forcing trick applied to its
+   sibling). Switching the row to a column outright sidesteps all of that:
+   with only one item per "row" now, there's no hypothetical-size
+   competition to get wrong — `.lyra-page-header-left` simply renders
+   first, full width, `.lyra-page-header-actions` renders directly under
+   it, and `align-items: flex-start` (overriding the row's own
+   `items-center`, which would otherwise center `actions` horizontally
+   under a `flex-direction: column` container) left-aligns it under the
+   title per explicit request. `gap-3` on `.lyra-page-header-suffix-wrap`
+   provides the vertical gap between the two stacked children the same way
+   it already provides horizontal gaps in the un-stacked row — overridden
+   to a flat 8px here (per explicit request/spec) rather than reusing that
+   12px, since a column-direction flex container's single `gap` applies
+   down the column regardless of what value it's set to. `justify-content:
+   flex-start` also overrides the row's own `justify-between` — main axis
+   is now VERTICAL under `flex-direction: column`, and `justify-between`
+   along that axis would spread the two stacked children apart to fill
+   this container's own `min-h-[68px]` floor (top child pinned to the very
+   top, bottom child pinned to the very bottom) instead of sitting snug
+   together with just the `gap` between them.
+
+   Selector targets `.lyra-page-header-container .lyra-page-header-suffix-
+   wrap` (a DESCENDANT combinator), not a bare `.lyra-page-header-suffix-
+   wrap` alone — see `.lyra-page-header-container`'s own doc comment above
+   for why: that element is the actual `container-type` query container
+   now, one level OUTSIDE `.lyra-page-header-suffix-wrap`, so this rule has
+   to reach down into it rather than trying to match it directly (the
+   self-referential version of this exact rule is what silently never
+   matched anything in the first place). */
+@container (max-width: 400px) {
+  .lyra-page-header-container .lyra-page-header-suffix-wrap:not(.lyra-page-header-has-suffix) {
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: 8px;
+  }
+}
+
+/* Dashboard greeting `PageHeader` (`titleSize="2xl"`) — same container,
+   same 400px threshold as the `actions`-drops-below-title rule just above
+   (both exist for the same "Good afternoon, {name}" header). Per explicit
+   follow-up ("decrease the font size to heading-lg when the size of the
+   home container goes below 400px so the names don't get cut off if
+   they're long — also... wrap the name to the next line if it is super
+   long"): below 400px, the title's own 28px/32px/700/-0.02rem 2xl styling
+   steps down to `.lyra-heading-lg`'s 20px/24px/600/-0.01rem values (kept in
+   sync with that class's own declaration above, not re-derived), and the
+   `<h1>`'s baked-in Tailwind `truncate` utility (`overflow-hidden text-
+   ellipsis whitespace-nowrap`) is overridden to allow wrapping onto a
+   second line instead of clipping a long `{name}` outright. Scoped to
+   `.lyra-page-header-container .lyra-heading-2xl` — a descendant selector,
+   not a bare `.lyra-heading-2xl` override — so this only ever touches a
+   `PageHeader` title actually using the 2xl tier (currently only this
+   greeting, across all 3 tiers); `.lyra-heading-2xl`'s other real-world
+   consumer, `DashboardCard`'s metric numbers, isn't nested inside a
+   `.lyra-page-header-container` and is untouched. Every `titleSize="lg"`
+   `PageHeader` (record headers, section titles) keeps truncating exactly as
+   before, at every width — this query only ever matches the 2xl class. */
+@container (max-width: 400px) {
+  .lyra-page-header-container .lyra-heading-2xl {
+    font-size: 20px;
+    line-height: 24px;
+    font-weight: 600;
+    letter-spacing: -0.01rem;
+    white-space: normal;
+    overflow: visible;
+    text-overflow: clip;
+  }
+}
+
+/* ════════════════════════════════════════════════════
+   Container header actions (CSS container query)
+   ════════════════════════════════════════════════════
+   `ContainerHeader`'s title/actions row (container-header.tsx) is a single
+   non-wrapping flex row by default — the title truncates via its own
+   min-w-0/truncate chain, but `actions` never gives up any width; it's
+   `shrink-0`. Fine for a couple of icon buttons, but breaks down for an
+   actions slot that itself needs real room — e.g. `ContactHistoryCard`'s
+   header (agent-next-gen-v1), which packs a `SearchInput` (240px+ before
+   it's unreadable) plus a date `FilterChip` into that same slot.
+
+   `.lyra-container-header-actions-wrap` (opt-in via `ContainerHeader`'s
+   `actionsWrap` prop) marks the header row that the family of PER-ELEMENT
+   collapse classes below (filter-chip icon collapse, search inline/below)
+   are scoped under — on its own it changes nothing; each piece of
+   `actions` decides its own fate instead of the whole cluster moving as
+   one block.
+
+   (An earlier version of this made `actionsWrap` itself force the *entire*
+   `actions` block onto a new full-width row below the title. Retired: a
+   header whose `actions` was just a single `DateFilterChip` — no
+   `SearchInput` needing that room — still got shoved onto its own line for
+   no reason, overlapping the title above it; confirmed from a screenshot.
+   The per-element classes below replace it — see "Filter chip icon
+   collapse" and "Search inline/below" further down.)
+
+   Deliberately does NOT itself establish the container-query boundary
+   (`container-type: inline-size`) — that used to live right here, which
+   meant EVERY `actionsWrap` consumer measured against its own header
+   row's width and got the exact same threshold, with no way to opt out.
+   That silently broke narrower dashboard widgets that only turned
+   `actionsWrap` on for the filter-chip icon-collapse fallback (Performance/
+   Productivity's `DateFilterChip`, agent-dashboard.tsx and agent-next-gen-
+   interaction-dashboard.tsx) the moment `ContactHistoryCard`'s own
+   threshold below was raised from 480px to 768px — those cards are
+   comfortably wider than 480px but not 768px, so they went from "always
+   full" to "always collapsed to the kebab icon" with no code of their own
+   changing at all (reported via screenshot: "Performance"/"Productivity"'s
+   date chip stuck as a bare `⋮` button).
+
+   Per that explicit follow-up ("I want the query to be not on the widget
+   itself but the parent container") the boundary is now a SEPARATE,
+   explicitly opt-in class, `.lyra-container-header-query-boundary`
+   (below) — the caller applies it to whichever ancestor's width should
+   actually decide the collapse (typically the card's own outer root, one
+   level OUTSIDE `ContainerHeader` itself, via that card's own `className`
+   prop — e.g. `DashboardCard`'s `className`, same "establish the boundary
+   on the card root, not inside the header" pattern `.lyra-metric-row-wrap`
+   already uses for `MetricRow`'s own responsive collapse, just above).
+   `ContactHistoryCard` (agent-next-gen-contact-history.tsx) is the one
+   real consumer that opts in today; Performance/Productivity deliberately
+   don't, so their `DateFilterChip` now stays in full/expanded mode
+   unconditionally — no container ancestor means the `@container` rules
+   below simply never match, which is the desired "no widget of mine is
+   quietly missing its query context" fallback. */
+.lyra-container-header-query-boundary {
+  container-type: inline-size;
+}
+
+/* ── Filter chip icon collapse — same family, same 768px threshold ──
+   A chip-style trigger (e.g. `DateFilterChip`/`ContactHistoryDateFilterChip`
+   in agent-next-gen-v1 — app-level components, not in lyra-ui itself, but
+   built on this shared family) sitting in a `ContainerHeader`'s `actions`
+   (with `actionsWrap` on) can shrink to a compact icon-only trigger below
+   768px instead of getting crushed — this keeps it pinned in its normal
+   spot, top-right beside the title, rather than moving anywhere.
+   Deliberately reuses whatever `.lyra-container-header-query-boundary`
+   ancestor the caller opted into (see that class's own doc comment just
+   above) and the same 768px threshold rather than declaring a second one
+   — same header, same "is there room" question, one answer. If no
+   ancestor carries that class, this whole `@container` block simply never
+   matches and stays in full/expanded mode — see that same doc comment for
+   why that's the deliberate fallback, not a bug. Raised from 480px per
+   explicit follow-up request ("update the container breakpoint to 768px
+   so search goes to a row below sooner" — reported against
+   `ContactHistoryCard`'s own "My Contact History" header, whose title was
+   still getting crushed to a couple of characters at ~500-600px because
+   this family's old 480px threshold hadn't fired yet) — matches the same
+   768px convention `TableToolbar`'s own row-wrap threshold uses
+   (table.tsx) rather than inventing a new number.
+
+   Same "both real nodes always in the DOM, CSS toggles which one shows"
+   convention as `.lyra-tab-overflow-wrap`/`.lyra-page-header-breadcrumb-
+   wrap` above (not a JS media-query check) — a chip's trigger is a single
+   `<button>` (required: it's a Radix `Popover` trigger via `asChild`, which
+   can only clone one child, so this can't be two sibling buttons swapped
+   in — the full/compact content lives *inside* the one trigger button
+   instead). `-filter-trigger` goes on that button itself (drops its
+   horizontal chip padding down to a square icon-button footprint once
+   collapsed); `-filter-full` wraps the label+value+chevron content;
+   `-filter-compact` wraps a single icon (`MoreVertical`/kebab, matching
+   `KebabMenuButton`'s own default glyph — this doesn't reuse that
+   component, since a `Popover` trigger can't also be `KebabMenuButton`'s
+   own `MenuRadix` trigger, but reuses its icon so a collapsed filter chip
+   reads the same as any other "more" affordance in the app). */
+.lyra-container-header-actions-wrap .lyra-container-header-filter-compact {
+  display: none;
+}
+@container (max-width: 768px) {
+  .lyra-container-header-actions-wrap .lyra-container-header-filter-full {
+    display: none;
+  }
+  .lyra-container-header-actions-wrap .lyra-container-header-filter-compact {
+    display: inline-flex;
+  }
+  .lyra-container-header-actions-wrap .lyra-container-header-filter-trigger {
+    width: 2rem;
+    padding-left: 0;
+    padding-right: 0;
+    justify-content: center;
+  }
+}
+
+/* ── Search inline/below — same family, same 768px threshold ──
+   The other half of the "filter stays put, search is what actually needs
+   to move" split above: a `SearchInput` in `actions` (e.g.
+   `ContactHistoryCard`'s "Search contact history" box, agent-next-gen-v1)
+   is the one control that genuinely can't shrink below a readable width —
+   below 768px it's what needs to give up its spot next to the title, not
+   the filter chip beside it. Rather than forcing the whole `actions`
+   cluster down (the retired approach above), only the search box moves:
+   a second real `SearchInput`, controlled by the same value/onValueChange
+   state as the one in `actions`, is passed through `ContainerHeader`'s own
+   `tabs` slot (renders on its own full-width row below the title,
+   regardless of what's actually inside it — "a `TabList` (or similar)",
+   per that prop's own doc comment) and CSS-toggled against this one
+   `-full`/`-below` pair. Threshold raised from 480px to 768px alongside
+   the filter-chip collapse above — see that rule's own doc comment for
+   why.
+
+   Two real, separately-controlled `<input>` elements, not one node moved
+   around — same "duplicate node, CSS shows/hides" convention as
+   `.lyra-tab-overflow-wrap` and the filter chip collapse above (a plain
+   DOM node can't jump between two different flex containers — `actions`
+   vs. `tabs` — via CSS alone). The hidden copy is `display: none`, which
+   also drops it from the tab order, so there's no duplicate stop for
+   keyboard/screen-reader users. */
+.lyra-container-header-actions-wrap .lyra-container-header-search-below {
+  display: none;
+}
+@container (max-width: 768px) {
+  .lyra-container-header-actions-wrap .lyra-container-header-search-inline {
+    display: none;
+  }
+  .lyra-container-header-actions-wrap .lyra-container-header-search-below {
+    display: block;
+  }
+}
+
+/* agent-next-gen-v2's `InteractionTranscript` avatar-collapse/bubble-width
+   below 400px used to live here as a CSS `@container` query
+   (`.lyra-transcript-wrap`/`.lyra-transcript-avatar`/`.lyra-transcript-
+   bubble`) — removed after it stopped firing reliably for the agent
+   live-testing it, even after several rounds of review/hardening.
+   Replaced with a plain `ResizeObserver` reading on the transcript's own
+   scroll container (`transcriptNarrow`, AgentNextGenPage.tsx), the same
+   pattern `ScheduleToolbar`'s own `containerRef`/`isWide`/`isCompact`
+   already uses for its Add/Day/Week collapse (SchedulePanel.tsx) — an
+   established, working precedent in that codebase for "a component
+   collapses based on its own rendered width." */

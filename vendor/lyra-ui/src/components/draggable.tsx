@@ -1,0 +1,828 @@
+import * as React from "react";
+import { GripVertical, PanelRight, Move } from "lucide-react";
+import { cn } from "../lib/utils";
+import { Tooltip } from "./tooltip";
+
+/* ── Not a panel ─────────────────────────────────────────────────────────
+   `Draggable` is a generic float/dock-and-resize shell (used to build
+   things like `DraggablePanel`, the AI panel, the notifications dropdown)
+   — it is NOT one of the two design-system panel types and shouldn't be
+   confused with either of them:
+
+     - `SidePanel`     — over the page header, hover/pin, left or right.
+     - `InteriorPanel` — below the page header, inline, click-triggered,
+                          left or right.
+
+   The comments below use the word "panel" a lot in the generic/lowercase
+   sense (the floating window this component drags/resizes), not as a
+   reference to `SidePanel`/`InteriorPanel`. ── */
+
+/* ── Panel Resize Direction Rules ─────────────────────────────────────────
+ *
+ *  FLOAT mode — bottom-right corner handle
+ *    • Left edge is ANCHORED (fixed CSS `left` position stored in a ref).
+ *    • Resizing always grows the RIGHT edge rightward.
+ *    • The `floatLeft` ref MUST be set when the panel opens and cleared when
+ *      it closes so that the `left` style value does NOT recalculate on every
+ *      render as `width` changes (which would move the left edge leftward and
+ *      make the panel appear to resize in the wrong direction).
+ *    • Rule: anchor floatLeft.current = containerWidth - panelWidth - margin
+ *      on open; reset to null on close; update on variant change (dock→float).
+ *
+ *  FLOAT mode — left edge handle (per explicit request: "expand the
+ *  drag-state panels to the left if I hover and grab the left side, like
+ *  how it works when they're docked")
+ *    • Right edge is what's actually fixed here — the consumer's own
+ *      static `left` anchor (above) never moves, so this handle can't just
+ *      grow `width` alone the way the docked handle does; it has to shift
+ *      `offset.x` (the internal drag transform) by the same amount `width`
+ *      changes, in lockstep, so `staticLeft + offset.x + width` (the
+ *      right edge) stays constant while the left edge moves.
+ *    • `onFloatLeftEdgeResizeDown`'s math: for a given `deltaX` (mouse
+ *      movement since resize start), `newWidth = startWidth - deltaX` and
+ *      `newOffsetX = startOffsetX + deltaX` — dragging the mouse LEFT
+ *      (negative deltaX) grows width and shifts the box left by the exact
+ *      same distance; dragging RIGHT does the reverse (shrinks, shifts
+ *      right). Both derive from one clamped `deltaX`, so they can never
+ *      drift out of sync with each other.
+ *    • Viewport containment: the LEFT edge (`rect.left` at resize start,
+ *      plus `deltaX`) is the only thing that can leave the viewport here
+ *      (the right edge never moves) — clamps `deltaX >= -rect.left` on top
+ *      of the usual `minWidth`/`maxWidth` bounds on the resulting width.
+ *
+ *  DOCKED mode — left edge handle
+ *    • Right edge is fixed at the viewport/container boundary.
+ *    • Dragging the left edge LEFTWARD grows the panel (into the content area).
+ *    • Dragging RIGHTWARD shrinks the panel.
+ *    • This is the correct natural behavior for a right-docked panel.
+ *
+ * ── Panel Open / Close Animation Rules ────────────────────────────────────
+ *
+ *  All panels and dropdowns in the design system use the same data-state
+ *  animation pattern driven by tailwindcss-animate utility classes.
+ *
+ *  Standard classes (apply to the outermost wrapper div of the panel):
+ *    open:   animate-in fade-in-0 slide-in-from-top-2 duration-150
+ *    close:  data-[state=closed]:animate-out data-[state=closed]:fade-out-0
+ *            data-[state=closed]:slide-out-to-top-1 data-[state=closed]:duration-100
+ *
+ *  data-state attribute:
+ *    • Set to "open" or "closed" on the wrapper div.
+ *    • Driven by a `visible` state variable that is toggled to false IMMEDIATELY
+ *      when the panel closes — this triggers the CSS animate-out before removal.
+ *    • A separate `mounted` state variable stays true for 300 ms after close
+ *      (via setTimeout) to keep the element in the DOM long enough for the
+ *      animate-out to complete before unmounting.
+ *    • `visible` → false immediately on close (triggers CSS close animation)
+ *    • `mounted` → false after 300 ms (removes element from DOM)
+ *
+ *  Float panels:
+ *    • Apply all open AND close classes (slide-in/slide-out from top).
+ *    • data-state={visible ? "open" : "closed"}
+ *
+ *  Docked panels:
+ *    • The width wrapper already provides a slide effect via CSS width transition.
+ *    • Apply only fade-in/fade-out to the inner content wrapper (no slide).
+ *    • data-state={visible ? "open" : "closed"}
+ *
+ * ── Multi-Panel Z-Index & Docking Rules ──────────────────────────────────
+ *
+ *  Z-INDEX (float mode only)
+ *    • The most recently opened or clicked panel gets z-index: 10000.
+ *    • Other float panels get z-index: 9999.
+ *    • Track with `topPanel` state in the parent; attach onMouseDown to float wrapper.
+ *
+ *  SINGLE-DOCK RULE
+ *    • Only one panel may be docked at a time.
+ *    • When a second panel docks, force the current docked panel back to float.
+ *    • Reset the displaced panel's floatLeft ref to containerWidth - panelWidth - 16.
+ *    • Requires variant prop to be synced into internal state via useEffect so the
+ *      parent can force a variant change externally.
+ *
+ * ── Viewport Containment ──────────────────────────────────────────────────
+ *
+ *  The panel's box must always stay fully inside the browser viewport — no
+ *  edge may be dragged or resized past `window.innerWidth`/`innerHeight` (or
+ *  before 0). This is enforced entirely inside this component, using the
+ *  panel's own `getBoundingClientRect()` at the moment a drag/resize starts
+ *  as the reference frame — it does NOT depend on how a consumer positions
+ *  the float wrapper (fixed/absolute, floatLeft/floatTop refs, etc.), so no
+ *  changes are needed in any consuming app.
+ *
+ *  • Float drag — `onDragMouseDown` captures the panel's un-offset base
+ *    position (`rect.left/top - current offset`) at drag start, then clamps
+ *    every subsequent offset so `base + offset` stays within
+ *    `[0, viewport - panelSize]` on both axes.
+ *  • Float corner resize — `onCornerResizeDown` captures the panel's fixed
+ *    top/left at resize start, then caps the new width/height so the
+ *    (fixed) top-left corner plus the (growing) size never exceeds the
+ *    viewport's right/bottom edge.
+ *  • Docked left-edge resize — the right edge is already pinned by the
+ *    consumer's flex layout, so only the left edge can leave the viewport;
+ *    `onLeftEdgeResizeDown` caps the new width so the left edge never goes
+ *    past `x = 0`.
+ *  • Browser window resize (no active drag/resize) — none of the above
+ *    handlers fire just because the window shrinks; a `window` `resize`
+ *    listener covers that case too:
+ *      – Docked: sibling elements (nav rail, content column) get squeezed
+ *        by the browser's own flex layout *before* this listener runs, so
+ *        `rootRef.current.getBoundingClientRect()` at that point already
+ *        reflects their final squeezed size. If the panel's measured right
+ *        edge now exceeds `window.innerWidth`, shrink `width` by exactly
+ *        that overflow (floored at `minWidth`) and call `onWidthChange` —
+ *        the same callback the consumer already uses to mirror width into
+ *        its own flex-sibling wrapper for manual resize, so the wrapper
+ *        shrinks too with no consumer-side changes needed.
+ *      – Float: re-clamp `offset` the same way `onDragMouseDown` does, and
+ *        shrink `width`/`height` if the panel itself is now bigger than the
+ *        shrunk viewport.
+ *  • Responsive max-width — below a 1440px viewport width, the effective
+ *    width cap tightens to 800px (or the `maxWidth` prop, whichever is
+ *    smaller — `getResponsiveMaxWidth` below). Applied everywhere `maxWidth`
+ *    is consulted: float corner-resize, docked left-edge resize, and the
+ *    window-resize listener, which also proactively shrinks an
+ *    already-wider panel down to the tightened cap even without a
+ *    resize-driven overflow (the same "shrink on window resize" mechanism
+ *    used for plain viewport overflow above). Like the rest of viewport
+ *    containment, this only ever shrinks — sizing the window back up past
+ *    1440px does not grow the panel back to its pre-shrink width.
+ *
+ * ─────────────────────────────────────────────────────────────────────── */
+
+/** Breakpoint and cap for the responsive max-width rule above. */
+const RESPONSIVE_MAX_WIDTH_BREAKPOINT = 1440;
+const RESPONSIVE_MAX_WIDTH_CAP = 800;
+
+/** Tightens `maxWidth` to `RESPONSIVE_MAX_WIDTH_CAP` once the viewport drops
+ *  below `RESPONSIVE_MAX_WIDTH_BREAKPOINT` — otherwise returns `maxWidth`
+ *  unchanged. Reads `window.innerWidth` live (not memoized) since every call
+ *  site already runs inside an event handler, after a resize/mousemove. */
+function getResponsiveMaxWidth(maxWidth: number): number {
+  if (typeof window === "undefined") return maxWidth;
+  return window.innerWidth < RESPONSIVE_MAX_WIDTH_BREAKPOINT
+    ? Math.min(maxWidth, RESPONSIVE_MAX_WIDTH_CAP)
+    : maxWidth;
+}
+
+/** Applies `getResponsiveMaxWidth` unless the consumer opted out via
+ *  `disableResponsiveMaxWidth` (see that prop's own doc comment) — in which
+ *  case `maxWidth` is returned as-is, letting the consumer's own computed
+ *  ceiling be the only cap. */
+function resolveMaxWidth(maxWidth: number, disableResponsiveMaxWidth: boolean): number {
+  return disableResponsiveMaxWidth ? maxWidth : getResponsiveMaxWidth(maxWidth);
+}
+
+/* ── Types ── */
+
+export type DraggableVariant = "float" | "docked";
+
+/**
+ * Common shape returned by a panel's own "content" hook (see
+ * `useAiPanelContent` in ai-panel.tsx, `useAgentNotificationsContent` in
+ * agent-notifications.tsx) — everything specific to what a panel shows,
+ * decoupled from the `Draggable` shell (grip/dock button/close button/
+ * resize) every panel wraps itself in. Exists so a single shared
+ * `Draggable` instance can swap between several panels' worth of content
+ * (title/icon/actions/body) without swapping which physical container is
+ * mounted — see lyra-ui's "Single Container" Storybook demos (`Draggable.
+ * stories.tsx`) and `AgentNextGenPage.tsx`'s own single-container app
+ * header panel for two different consumers of the same shape.
+ */
+export interface EmbeddablePanelContent {
+  /** Header title */
+  title: React.ReactNode;
+  /** Optional badge rendered right after the title (e.g. an unread count) */
+  titleBadge?: React.ReactNode;
+  /** Extra className merged onto `ContainerHeader`'s own title element */
+  titleClassName?: string;
+  /** Icon shown in the header when DOCKED only — float mode always shows
+   *  the shared drag grip instead, same convention every real panel
+   *  (`DraggablePanel`, `AiPanel`, `AgentNotifications`) already follows. */
+  dockedIcon?: React.ReactNode;
+  /** Extra actions rendered before the shell's own shared dock button */
+  headerActions?: React.ReactNode;
+  /** Fixed content between the title row and the scrollable body (e.g. a
+   *  Select that should stay put rather than scroll away with `body`) */
+  headerContent?: React.ReactNode;
+  /** Scrollable panel body */
+  body: React.ReactNode;
+}
+
+/** Props passed to renderHeaderControls so the consumer can inline grip + dock. */
+export interface DraggableHeaderControls {
+  /** Spread onto a draggable handle element (float mode only — noop in docked). */
+  gripProps: {
+    onMouseDown: React.MouseEventHandler<HTMLElement>;
+    "aria-hidden": true;
+    className: string;
+  };
+  /** Spread onto the dock/undock button. */
+  dockButtonProps: {
+    type: "button";
+    onClick: () => void;
+    "aria-label": string;
+    className: string;
+  };
+  /** Current icon for the dock button (already correct for the active variant). */
+  dockIcon: React.ReactNode;
+  /** Current variant — lets the consumer conditionally render the grip. */
+  variant: DraggableVariant;
+}
+
+export interface DraggableProps {
+  children: React.ReactNode;
+  /** "float" — freely draggable. "docked" — pinned to right edge. */
+  variant?: DraggableVariant;
+  defaultWidth?: number;
+  defaultHeight?: number;
+  minWidth?: number;
+  /** Caps both float resize and docked width-resize (default: 1024 — override per-instance if a panel genuinely needs to go wider/narrower). */
+  maxWidth?: number;
+  minHeight?: number;
+  /**
+   * Opts out of the built-in "below 1440px viewport, tighten maxWidth to
+   * 800px" heuristic (see `getResponsiveMaxWidth` above) — default false,
+   * preserving that behavior for every existing consumer. Set true when a
+   * consumer computes its OWN, more precise `maxWidth` from real sibling
+   * layout (e.g. "how much room is left once a neighboring column's own
+   * min-width floor is reserved") — that per-render number already
+   * accounts for the actual available space, so the coarse viewport-width
+   * heuristic on top of it only gets in the way: it can cap the panel
+   * BELOW what the consumer's own arbitration already proved was safe,
+   * with no way for the consumer to override it. Confirmed live as a real
+   * bug: a consumer capping at `min(1024, maxDockedWidthForMainFloor)`
+   * (agent-next-gen-v2's shared docked panel) got stuck well under 1024
+   * even with its neighboring column sitting comfortably above its own
+   * floor, purely because the viewport happened to be under 1440px wide.
+   */
+  disableResponsiveMaxWidth?: boolean;
+  /** Called when variant changes via the dock toggle button */
+  onVariantChange?: (variant: DraggableVariant) => void;
+  /**
+   * When provided, Draggable skips its built-in overlay and calls this instead,
+   * passing grip + dock props so the consumer can place them inside its own header.
+   * When used, the automatic pl-7 padding on the first child is also suppressed.
+   */
+  renderHeaderControls?: (controls: DraggableHeaderControls) => React.ReactNode;
+  /** Hide the built-in grip/dock header controls (use when the consumer renders them inline) */
+  showHeaderControls?: boolean;
+  /** Prevent the variant from being toggled via the header button */
+  lockVariant?: boolean;
+  /**
+   * Show the docked-mode left-edge resize handle (default: true). Set to
+   * false when there's nothing docked beside this panel to resize into —
+   * e.g. it's taking over the full width of its container on its own —
+   * so there's no dead cursor-ew-resize strip implying a drag that
+   * wouldn't have anything to shrink/grow against. Docked mode only; float
+   * mode's corner resize is unaffected.
+   */
+  dockedResizable?: boolean;
+  /** Called when width changes via resize */
+  onWidthChange?: (width: number) => void;
+  /** Called when resize drag starts/ends */
+  onResizeStateChange?: (resizing: boolean) => void;
+  /**
+   * Called on any mousedown inside the panel root.
+   * Use this in the parent to implement "bring to front" z-index management.
+   * Prefer this over onMouseDown on the float wrapper div — the wrapper's layout
+   * box stays at the original position when the panel is dragged via CSS transform,
+   * creating an invisible ghost hit area. The Draggable root div follows the transform.
+   */
+  onInteract?: () => void;
+  className?: string;
+}
+
+/* ── Component ── */
+
+const Draggable = React.forwardRef<HTMLDivElement, DraggableProps>(
+  ({
+    children,
+    variant: variantProp  = "float",
+    defaultWidth          = 320,
+    defaultHeight         = 480,
+    minWidth              = 280,
+    maxWidth              = 1024,
+    minHeight             = 200,
+    disableResponsiveMaxWidth = false,
+    onVariantChange,
+    renderHeaderControls,
+    showHeaderControls = true,
+    lockVariant = false,
+    dockedResizable = true,
+    onWidthChange,
+    onResizeStateChange,
+    onInteract,
+    className,
+  }, ref) => {
+    const [variant, setVariant] = React.useState<DraggableVariant>(variantProp);
+    const [offset,  setOffset]  = React.useState({ x: 0, y: 0 });
+    const [width,   setWidth]   = React.useState(defaultWidth);
+    const [height,  setHeight]  = React.useState(defaultHeight);
+
+    // Sync variant when parent changes the prop (e.g. forced float by single-dock rule)
+    React.useEffect(() => { setVariant(variantProp); }, [variantProp]);
+
+    // Sync when defaultHeight changes (e.g. viewport resize)
+    React.useEffect(() => { setHeight(defaultHeight); }, [defaultHeight]);
+
+    // `BuiltInHeaderControls` below (the grip/dock overlay used when a
+    // consumer doesn't supply `renderHeaderControls`) needs to know the
+    // ACTUAL rendered height of whatever `children`'s first element is —
+    // `Draggable` doesn't own or render that header itself (`children` is
+    // generic `React.ReactNode`; convention only, not enforcement, decides
+    // that the first child acts as the header — see the `pl-7` comment
+    // below), so it can't just assume a fixed number matches it. A
+    // hardcoded height here previously went stale the moment
+    // `container-header.tsx`'s own padding changed elsewhere, silently
+    // drifting the overlay out of vertical alignment with the real header
+    // underneath it (see PROJECT_SUMMARY.md). Measuring the real element
+    // instead means this can't drift again regardless of what padding any
+    // given header component uses, or whether a consumer swaps in an
+    // entirely different header component altogether. Skipped entirely
+    // when `renderHeaderControls` is supplied — `BuiltInHeaderControls`
+    // never renders in that case, so there's nothing for this to drive.
+    const headerContentRef = React.useRef<HTMLDivElement>(null);
+    const [headerHeight, setHeaderHeight] = React.useState(60);
+    React.useLayoutEffect(() => {
+      if (renderHeaderControls) return;
+      const headerEl = headerContentRef.current?.firstElementChild as HTMLElement | null;
+      if (!headerEl) return;
+      const update = () => setHeaderHeight(headerEl.getBoundingClientRect().height);
+      update();
+      const ro = new ResizeObserver(update);
+      ro.observe(headerEl);
+      return () => ro.disconnect();
+    }, [children, renderHeaderControls]);
+
+    const dragStart   = React.useRef<{ mx: number; my: number; ox: number; oy: number; baseLeft: number; baseTop: number } | null>(null);
+    const resizeStart = React.useRef<{ mx: number; my: number; w: number; h: number; left: number; top: number } | null>(null);
+    // Separate from `resizeStart` above — the float left-edge handle needs
+    // to track the drag's starting `offset.x` (`ox`) too, since it moves
+    // `offset.x` and `width` together (see `onFloatLeftEdgeResizeDown`'s
+    // own doc comment, "Panel Resize Direction Rules" above, for why).
+    const floatEdgeResizeStart = React.useRef<{ mx: number; w: number; ox: number; left: number } | null>(null);
+
+    // Local ref for measuring the panel's own on-screen position (viewport
+    // containment needs this regardless of how a consumer positions the
+    // float wrapper) — merged with any ref the consumer passed in.
+    const rootRef = React.useRef<HTMLDivElement | null>(null);
+    const setRootRef = (node: HTMLDivElement | null) => {
+      rootRef.current = node;
+      if (typeof ref === "function") ref(node);
+      else if (ref) (ref as React.MutableRefObject<HTMLDivElement | null>).current = node;
+    };
+
+    // Always-current snapshot for the window-resize listener below — written
+    // on every render (not inside an effect) so the listener, which mounts
+    // once, never reads stale values without needing to re-subscribe on
+    // every offset/width change during a drag.
+    const latestRef = React.useRef({ variant, offset, width, height, minWidth, maxWidth, minHeight, onWidthChange, disableResponsiveMaxWidth });
+    latestRef.current = { variant, offset, width, height, minWidth, maxWidth, minHeight, onWidthChange, disableResponsiveMaxWidth };
+
+    // Shared by the window-resize handler right below AND the mount/
+    // variant-change effect further down — given the panel's CURRENT
+    // on-screen rect (whatever positioned it there: the drag offset, or a
+    // consumer's own fixed top/left wrapper), returns the offset needed to
+    // bring it back fully inside the viewport, or `null` if it already fits.
+    const clampOffsetIntoViewport = (offset: { x: number; y: number }, width: number, height: number) => {
+      const rect = rootRef.current?.getBoundingClientRect();
+      if (!rect) return null;
+      const baseLeft = rect.left - offset.x;
+      const baseTop  = rect.top  - offset.y;
+      const minX = -baseLeft;
+      const minY = -baseTop;
+      const maxX = window.innerWidth  - width  - baseLeft;
+      const maxY = window.innerHeight - height - baseTop;
+      const x = Math.max(minX, Math.min(maxX, offset.x));
+      const y = Math.max(minY, Math.min(maxY, offset.y));
+      return x !== offset.x || y !== offset.y ? { x, y } : null;
+    };
+
+    // Window resize (no active drag) — see "Viewport Containment" above.
+    React.useEffect(() => {
+      const handleResize = () => {
+        const rect = rootRef.current?.getBoundingClientRect();
+        if (!rect) return;
+        const { variant, offset, width, height, minWidth, maxWidth, minHeight, onWidthChange, disableResponsiveMaxWidth } = latestRef.current;
+        const effectiveMaxWidth = resolveMaxWidth(maxWidth, disableResponsiveMaxWidth);
+        if (variant === "docked") {
+          // Combines two independent reasons width might need to shrink:
+          // the panel's right edge overflowing the (now narrower) viewport,
+          // and the responsive cap having tightened below the panel's
+          // current width even with no overflow at all.
+          const overflow = Math.max(0, rect.right - window.innerWidth);
+          const newW = Math.max(minWidth, Math.min(effectiveMaxWidth, width - overflow));
+          if (newW !== width) { setWidth(newW); onWidthChange?.(newW); }
+        } else {
+          const corrected = clampOffsetIntoViewport(offset, width, height);
+          if (corrected) setOffset(corrected);
+          const newW = Math.min(width, window.innerWidth, effectiveMaxWidth);
+          const newH = Math.min(height, window.innerHeight);
+          if (newW !== width)  { setWidth(newW);  onWidthChange?.(newW); }
+          if (newH !== height) setHeight(newH);
+        }
+      };
+      window.addEventListener("resize", handleResize);
+      return () => window.removeEventListener("resize", handleResize);
+    }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+    // Re-clamp DOCKED `width` whenever `maxWidth`/`minWidth` THEMSELVES
+    // change — not just on an actual browser `resize` event (the handler
+    // just above) or an active drag (the resize handlers further down,
+    // both of which already read `maxWidth`/`minWidth` fresh via
+    // `latestRef` on every pointer-move). A consumer that computes
+    // `maxWidth` from its own layout — "how much room is left once a
+    // sibling's own min-width floor is reserved" — can have that number
+    // shrink for reasons that never fire a real `resize` event at all: a
+    // sibling nav rail expanding, another panel opening, anything that
+    // only changes THIS SAME window's internal layout rather than the
+    // window itself. Confirmed live as a real gap: `width` (seeded once
+    // from `defaultWidth`, otherwise only ever touched by an actual drag
+    // or the window-resize handler above) just kept rendering at its old,
+    // now-too-wide value in that case, overflowing past whatever newly-
+    // tightened space its consumer had actually reserved for it, with no
+    // `resize` event to ever correct it. Scoped to `"docked"` only — float
+    // has its own separate offset/viewport-containment concerns (the
+    // effect below) not exercised by this report.
+    React.useEffect(() => {
+      if (variant !== "docked") return;
+      const effectiveMaxWidth = resolveMaxWidth(maxWidth, disableResponsiveMaxWidth);
+      const newW = Math.max(minWidth, Math.min(effectiveMaxWidth, width));
+      if (newW !== width) { setWidth(newW); onWidthChange?.(newW); }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [variant, minWidth, maxWidth, disableResponsiveMaxWidth]);
+
+    // Float position containment on mount / on every transition into float
+    // — see "Viewport Containment" above. The window-resize handler just
+    // above only self-corrects in reaction to an actual `resize` event; it
+    // does nothing about a BAD starting position on an otherwise-static
+    // viewport. That can happen even though this component enforces its own
+    // containment during drags/resizes, because the very first on-screen
+    // spot for a float panel is still whatever fixed top/left position a
+    // CONSUMER'S wrapper computes (this component only adds a `transform`
+    // offset on top of it, starting at {x:0,y:0} on every dock/undock
+    // toggle). A consumer that anchors that wrapper by subtracting the
+    // panel's own `width` from its container's remaining space can get it
+    // badly wrong right after a resize-then-redock — the container is still
+    // measured while the (possibly now much wider) panel is still occupying
+    // layout space as "docked", so its own width gets subtracted out twice,
+    // landing the panel far off-screen the instant it floats again.
+    // Reported repro: "undock -> resize panel to max width -> redock ->
+    // undock again immediately -> the draggable container is off the
+    // screen" (not draggable back on-screen since the drag handle itself is
+    // off-screen too). Rather than relying on every consumer's float-anchor
+    // math to be correct, this component now clamps itself into the
+    // viewport on every transition into float mode (including first mount),
+    // using the exact same math as the resize handler above — matching this
+    // component's own documented promise that viewport containment "does
+    // NOT depend on how a consumer positions the float wrapper."
+    React.useLayoutEffect(() => {
+      if (variant !== "float") return;
+      const corrected = clampOffsetIntoViewport(offset, width, height);
+      if (corrected) setOffset(corrected);
+      // Deliberately keyed only on `variant` — offset/width/height changes
+      // during an active drag or resize are already clamped live by those
+      // handlers themselves and shouldn't re-trigger this.
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [variant]);
+
+    const toggleVariant = () => {
+      if (lockVariant) return;
+      const next: DraggableVariant = variant === "float" ? "docked" : "float";
+      setVariant(next);
+      setOffset({ x: 0, y: 0 });
+      onVariantChange?.(next);
+    };
+
+    /* ── Float: drag ── */
+    const onDragMouseDown = (e: React.MouseEvent) => {
+      if (variant !== "float") return;
+      if ((e.target as HTMLElement).closest("button")) return;
+      e.preventDefault();
+      // Base position = current on-screen position with the *current*
+      // offset subtracted back out, i.e. where the panel would sit at
+      // offset (0,0). Every subsequent offset during this drag gets
+      // clamped against this fixed reference so base + offset never
+      // leaves the viewport (see "Viewport Containment" above).
+      const rect = rootRef.current?.getBoundingClientRect();
+      const baseLeft = rect ? rect.left - offset.x : 0;
+      const baseTop  = rect ? rect.top  - offset.y : 0;
+      dragStart.current = { mx: e.clientX, my: e.clientY, ox: offset.x, oy: offset.y, baseLeft, baseTop };
+      document.body.style.cursor     = "grabbing";
+      document.body.style.userSelect = "none";
+      const onMove = (ev: MouseEvent) => {
+        if (!dragStart.current) return;
+        const { baseLeft, baseTop, ox, oy, mx, my } = dragStart.current;
+        const minX = -baseLeft;
+        const minY = -baseTop;
+        const maxX = window.innerWidth  - width  - baseLeft;
+        const maxY = window.innerHeight - height - baseTop;
+        // If the panel is wider/taller than the viewport, prioritize
+        // keeping the top-left corner on screen over the bottom-right.
+        const x = Math.max(minX, Math.min(maxX, ox + ev.clientX - mx));
+        const y = Math.max(minY, Math.min(maxY, oy + ev.clientY - my));
+        setOffset({ x, y });
+      };
+      const onUp = () => {
+        dragStart.current = null;
+        document.body.style.cursor = "";
+        document.body.style.userSelect = "";
+        document.removeEventListener("mousemove", onMove);
+        document.removeEventListener("mouseup", onUp);
+      };
+      document.addEventListener("mousemove", onMove);
+      document.addEventListener("mouseup", onUp);
+    };
+
+    /* ── Float: corner resize ── */
+    const onCornerResizeDown = (e: React.MouseEvent) => {
+      e.preventDefault(); e.stopPropagation();
+      // Top-left corner is fixed during a corner resize, so the viewport
+      // cap on width/height is just "don't grow past the viewport's own
+      // right/bottom edge from here" (see "Viewport Containment" above).
+      const rect = rootRef.current?.getBoundingClientRect();
+      resizeStart.current = { mx: e.clientX, my: e.clientY, w: width, h: height, left: rect?.left ?? 0, top: rect?.top ?? 0 };
+      document.body.style.cursor     = "se-resize";
+      document.body.style.userSelect = "none";
+      onResizeStateChange?.(true);
+      const onMove = (ev: MouseEvent) => {
+        if (!resizeStart.current) return;
+        const { left, top } = resizeStart.current;
+        const maxWViewport = window.innerWidth  - left;
+        const maxHViewport = window.innerHeight - top;
+        const newW = Math.min(resolveMaxWidth(maxWidth, disableResponsiveMaxWidth), maxWViewport, Math.max(minWidth, resizeStart.current.w + ev.clientX - resizeStart.current.mx));
+        setWidth(newW); onWidthChange?.(newW);
+        const newH = Math.min(maxHViewport, Math.max(minHeight, resizeStart.current.h + ev.clientY - resizeStart.current.my));
+        setHeight(newH);
+      };
+      const onUp = () => {
+        resizeStart.current = null;
+        document.body.style.cursor = "";
+        document.body.style.userSelect = "";
+        onResizeStateChange?.(false);
+        document.removeEventListener("mousemove", onMove);
+        document.removeEventListener("mouseup", onUp);
+      };
+      document.addEventListener("mousemove", onMove);
+      document.addEventListener("mouseup", onUp);
+    };
+
+    /* ── Float: left edge resize ── */
+    const onFloatLeftEdgeResizeDown = (e: React.MouseEvent) => {
+      e.preventDefault(); e.stopPropagation();
+      // The RIGHT edge is what stays fixed here (see "Panel Resize
+      // Direction Rules" above) — `offset.x` and `width` move together in
+      // lockstep off one shared `deltaX`, so they can never drift apart.
+      const rect = rootRef.current?.getBoundingClientRect();
+      floatEdgeResizeStart.current = { mx: e.clientX, w: width, ox: offset.x, left: rect?.left ?? 0 };
+      document.body.style.cursor     = "ew-resize";
+      document.body.style.userSelect = "none";
+      onResizeStateChange?.(true);
+      const onMove = (ev: MouseEvent) => {
+        if (!floatEdgeResizeStart.current) return;
+        const { mx, w: startW, ox: startOx, left: startLeft } = floatEdgeResizeStart.current;
+        const deltaX = ev.clientX - mx;
+        // Viewport containment: the left edge (`startLeft + deltaX`) is the
+        // only thing that can leave the viewport from this handle — the
+        // right edge never moves — so clamp `deltaX` from below at
+        // `-startLeft` (left edge can't cross x = 0), on top of the usual
+        // `minWidth`/`maxWidth` bounds on the resulting width.
+        const minDeltaX = Math.max(-startLeft, startW - resolveMaxWidth(maxWidth, disableResponsiveMaxWidth));
+        const maxDeltaX = startW - minWidth;
+        const clampedDeltaX = Math.max(minDeltaX, Math.min(maxDeltaX, deltaX));
+        setWidth(startW - clampedDeltaX);
+        onWidthChange?.(startW - clampedDeltaX);
+        setOffset((prev) => ({ x: startOx + clampedDeltaX, y: prev.y }));
+      };
+      const onUp = () => {
+        floatEdgeResizeStart.current = null;
+        document.body.style.cursor = "";
+        document.body.style.userSelect = "";
+        onResizeStateChange?.(false);
+        document.removeEventListener("mousemove", onMove);
+        document.removeEventListener("mouseup", onUp);
+      };
+      document.addEventListener("mousemove", onMove);
+      document.addEventListener("mouseup", onUp);
+    };
+
+    /* ── Docked: left edge resize ── */
+    const onLeftEdgeResizeDown = (e: React.MouseEvent) => {
+      e.preventDefault(); e.stopPropagation();
+      // Right edge is pinned by the consumer's flex layout, so the only way
+      // this can leave the viewport is the left edge crossing x = 0 as width
+      // grows — cap width at the panel's current right edge (see "Viewport
+      // Containment" above).
+      const rect = rootRef.current?.getBoundingClientRect();
+      const rightEdge = rect ? rect.left + rect.width : Infinity;
+      resizeStart.current = { mx: e.clientX, my: e.clientY, w: width, h: height, left: rect?.left ?? 0, top: rect?.top ?? 0 };
+      document.body.style.cursor     = "ew-resize";
+      document.body.style.userSelect = "none";
+      onResizeStateChange?.(true);
+      const onMove = (ev: MouseEvent) => {
+        if (!resizeStart.current) return;
+        const newW = Math.min(resolveMaxWidth(maxWidth, disableResponsiveMaxWidth), rightEdge, Math.max(minWidth, resizeStart.current.w + resizeStart.current.mx - ev.clientX));
+        setWidth(newW); onWidthChange?.(newW);
+      };
+      const onUp = () => {
+        resizeStart.current = null;
+        document.body.style.cursor = "";
+        document.body.style.userSelect = "";
+        onResizeStateChange?.(false);
+        document.removeEventListener("mousemove", onMove);
+        document.removeEventListener("mouseup", onUp);
+      };
+      document.addEventListener("mousemove", onMove);
+      document.addEventListener("mouseup", onUp);
+    };
+
+    /* ── Built-in overlay (used when renderHeaderControls is NOT provided) ── */
+    /* Height comes from `headerHeight` (measured above via ResizeObserver
+       against `children`'s actual first element), not a hardcoded number —
+       a previous version of this hardcoded a fixed height matching
+       `ContainerHeader`'s OWN height at the time, which silently drifted
+       out of alignment once `container-header.tsx`'s padding changed
+       elsewhere without this constant following along (see
+       PROJECT_SUMMARY.md). Measuring the real element means this can't
+       drift again, and works for any header a consumer renders as
+       `children`'s first element, not just `ContainerHeader`. */
+    const BuiltInHeaderControls = (
+      <div
+        className="absolute inset-x-0 top-0 z-20 flex items-center justify-between px-2 pointer-events-none"
+        style={{ height: headerHeight }}
+      >
+        {/* Grip — float only */}
+        {variant === "float" ? (
+          <div
+            className="flex items-center pointer-events-auto cursor-grab active:cursor-grabbing text-lyra-fg-secondary hover:text-lyra-fg-default transition-colors"
+            onMouseDown={onDragMouseDown}
+            aria-hidden="true"
+          >
+            <GripVertical className="h-4 w-4" strokeWidth={1.5} />
+          </div>
+        ) : <span />}
+
+        {/* Dock/undock toggle */}
+        <Tooltip content={variant === "float" ? "Dock to side" : "Undock"} placement="bottom">
+          <button
+            type="button"
+            onClick={toggleVariant}
+            aria-label={variant === "float" ? "Dock to side" : "Undock"}
+            className="flex h-6 w-6 items-center justify-center rounded-lyra-sm text-lyra-fg-secondary hover:text-lyra-fg-default hover:bg-lyra-state-hover transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-lyra-border-focus pointer-events-auto"
+          >
+            {variant === "float"
+              ? <PanelRight className="h-3.5 w-3.5" strokeWidth={1.5} />
+              : <Move       className="h-3.5 w-3.5" strokeWidth={1.5} />}
+          </button>
+        </Tooltip>
+      </div>
+    );
+
+    /* Controls object passed to renderHeaderControls consumers */
+    const headerControlProps: DraggableHeaderControls = {
+      gripProps: {
+        onMouseDown: onDragMouseDown,
+        "aria-hidden": true,
+        className: "flex items-center cursor-grab active:cursor-grabbing text-lyra-fg-secondary hover:text-lyra-fg-default transition-colors",
+      },
+      dockButtonProps: {
+        type: "button",
+        onClick: toggleVariant,
+        "aria-label": variant === "float" ? "Dock to side" : "Undock",
+        className: "flex h-6 w-6 items-center justify-center rounded-lyra-sm text-lyra-fg-secondary hover:text-lyra-fg-default hover:bg-lyra-state-hover transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-lyra-border-focus",
+      },
+      dockIcon: variant === "float"
+        ? <PanelRight className="h-3.5 w-3.5" strokeWidth={1.5} />
+        : <Move       className="h-3.5 w-3.5" strokeWidth={1.5} />,
+      variant,
+    };
+
+    const useInlineControls = !!renderHeaderControls;
+
+    // Shared between BOTH branches below, each given an explicit `key` —
+    // required now that a consumer can keep the SAME `Draggable` instance
+    // mounted across a dock/undock toggle (see PROJECT_SUMMARY.md's
+    // "remount bug" fix: previously every real consumer's own float/docked
+    // wrapper structure caused a full remount on every toggle anyway, which
+    // masked this). Without a stable `key`, React reconciles a component's
+    // children by POSITION, not identity — and the docked branch's children
+    // (`[edgeResizeHandle, headerControls?, content]`) are a DIFFERENT
+    // shape (different element type at index 0, different array length)
+    // than the float branch's (`[headerControls?, content, cornerResizeHandle]`).
+    // So even though `Draggable` itself no longer remounts, switching which
+    // of these two branches renders still silently unmounted+remounted
+    // `headerContentRef`'s own div (and `BuiltInHeaderControls`) purely
+    // because they landed at a different index — visible as the built-in
+    // grip/dock overlay briefly rendering in the wrong place immediately
+    // after a dock/undock, reported as "the containerheader buttons are
+    // weirdly positioned ... They should not change positions." Giving
+    // `headerControls`/`content` (and the two resize-handle divs, for the
+    // same reason should either ever need to coexist) stable keys lets
+    // React match them by identity across the branch switch instead, so
+    // neither one is ever needlessly torn down.
+    const headerControlsNode = !useInlineControls && showHeaderControls ? (
+      <React.Fragment key="header-controls">{BuiltInHeaderControls}</React.Fragment>
+    ) : null;
+    const contentNode = (
+      <div
+        key="content"
+        ref={headerContentRef}
+        className={cn("flex flex-col flex-1 min-h-0", variant === "float" && !useInlineControls && "[&>*:first-child]:pl-7")}
+      >
+        {useInlineControls ? renderHeaderControls!(headerControlProps) : null}
+        {children}
+      </div>
+    );
+
+    /* ── Docked ── */
+    if (variant === "docked") {
+      return (
+        <div
+          ref={setRootRef}
+          style={{ width, minWidth }}
+          className={cn("relative flex flex-col h-full overflow-hidden", className)}
+          onMouseDown={() => onInteract?.()}
+        >
+          {/* Left edge resize handle — expands left, right side stays fixed.
+              Skipped entirely when `dockedResizable` is false (nothing
+              docked beside this panel to resize into). */}
+          {dockedResizable && (
+            <div
+              key="edge-resize"
+              onMouseDown={onLeftEdgeResizeDown}
+              // z-30, not z-10 — per explicit request ("the interior panel
+              // is overlaying on top of the drag icon so the dragged
+              // containers cannot be resized when the interior panel is
+              // open"): arbitrary panel content rendered inside `children`
+              // (e.g. `CustomerRowInfoPanel`'s own `InteriorPanel`, raised
+              // to `z-20` to clear a table row's own hover overlay — see
+              // that component's own doc comment) could otherwise paint
+              // above this resize strip and swallow its mouse events. This
+              // handle needs to stay interactive above ANY content this
+              // container hosts, not just whatever z-index happened to be
+              // in use when it was originally set to z-10.
+              className="absolute left-0 top-0 bottom-0 w-1.5 cursor-ew-resize z-30 group/edge"
+              aria-hidden="true"
+            >
+              <div className="absolute inset-y-0 left-0 w-px bg-lyra-border-subtle group-hover/edge:bg-lyra-border-active transition-colors" />
+            </div>
+          )}
+
+          {headerControlsNode}
+          {contentNode}
+        </div>
+      );
+    }
+
+    /* ── Float ── */
+    return (
+      <div
+        ref={setRootRef}
+        style={{ transform: `translate(${offset.x}px, ${offset.y}px)`, width, height, pointerEvents: "auto" }}
+        className={cn("relative flex flex-col overflow-hidden", className)}
+        onMouseDown={() => onInteract?.()}
+      >
+        {headerControlsNode}
+        {/* pl-7 gives the first child's header room for the grip icon — only when using built-in overlay (see contentNode's className above) */}
+        {contentNode}
+
+        {/* Left edge resize handle — expands left, right side stays fixed
+            (see `onFloatLeftEdgeResizeDown`'s own doc comment, "Panel
+            Resize Direction Rules" above, for the float-specific offset+
+            width math this needs that the docked handle doesn't). Same
+            markup/z-index reasoning as docked's own `edge-resize` handle
+            — stays interactive above any panel content this container
+            hosts. Always shown (no `dockedResizable`-style opt-out prop)
+            — unlike docked mode, a floating panel never has "nothing
+            beside it to resize into" as a reason to hide this. */}
+        <div
+          key="float-edge-resize"
+          onMouseDown={onFloatLeftEdgeResizeDown}
+          className="absolute left-0 top-0 bottom-0 w-1.5 cursor-ew-resize z-30 group/edge"
+          aria-hidden="true"
+        >
+          <div className="absolute inset-y-0 left-0 w-px bg-lyra-border-subtle group-hover/edge:bg-lyra-border-active transition-colors" />
+        </div>
+
+        {/* Bottom-right corner resize handle */}
+        <div
+          key="corner-resize"
+          onMouseDown={onCornerResizeDown}
+          // z-30, not z-10 — same reasoning as `edge-resize`'s own doc
+          // comment just above: stays interactive above any panel content
+          // this container hosts (e.g. a `z-20` `InteriorPanel` docked
+          // inside it), instead of being paintable-over by it.
+          className="absolute bottom-0 right-0 w-4 h-4 cursor-se-resize flex items-end justify-end pb-1 pr-1 group/resize z-30"
+          aria-hidden="true"
+        >
+          <svg width="10" height="10" viewBox="0 0 10 10" className="text-lyra-border-soft group-hover/resize:text-lyra-border-active transition-colors">
+            <path d="M9 1L1 9M9 5L5 9" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+          </svg>
+        </div>
+      </div>
+    );
+  }
+);
+Draggable.displayName = "Draggable";
+
+export { Draggable };

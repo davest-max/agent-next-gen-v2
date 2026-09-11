@@ -1,0 +1,315 @@
+@import "./styles/lyra-tokens.css";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── Typography ── */
+.lyra-heading-2xl { font-size: 28px; line-height: 32px; font-weight: 700; letter-spacing: -0.02rem; }
+.lyra-heading-xl { font-size: 24px; line-height: 28px; font-weight: 500; letter-spacing: -0.02rem; }
+.lyra-heading-lg { font-size: 20px; line-height: 24px; font-weight: 600; letter-spacing: -0.01rem; }
+.lyra-heading-md { font-size: 16px; line-height: 24px; font-weight: 500; letter-spacing: -0.01rem; }
+.lyra-heading-sm { font-size: 14px; line-height: 20px; font-weight: 500; letter-spacing: 0; }
+.lyra-heading-xs { font-size: 12px; line-height: 16px; font-weight: 500; letter-spacing: 0.01rem; }
+
+/* Defined before the Body block below on purpose: Label is the default
+   typography `<Label>` applies to itself (see label.tsx), and some
+   consumers (e.g. Checkbox) override it with a `.lyra-body-*` className to
+   get regular-weight option text instead of emphasized field-label text.
+   Both classes end up on the same element in that case, and with equal
+   specificity the *later* rule in the cascade wins — so `.lyra-label` has
+   to come first, or a consumer's `.lyra-body-md` override silently loses
+   to it (as happened with Checkbox/CheckboxGroup option labels rendering
+   at weight 500 instead of the intended 400). */
+.lyra-label { font-size: 14px; line-height: 20px; font-weight: 500; letter-spacing: 0; }
+
+.lyra-body-lg          { font-size: 16px; line-height: 24px; font-weight: 400; letter-spacing: -0.01rem; }
+.lyra-body-lg-emphasis { font-size: 16px; line-height: 24px; font-weight: 500; letter-spacing: -0.01rem; }
+.lyra-body-md          { font-size: 14px; line-height: 20px; font-weight: 400; letter-spacing: 0; }
+.lyra-body-md-emphasis { font-size: 14px; line-height: 20px; font-weight: 500; letter-spacing: 0; }
+.lyra-body-sm          { font-size: 12px; line-height: 16px; font-weight: 400; letter-spacing: 0.01rem; }
+.lyra-body-sm-emphasis { font-size: 12px; line-height: 16px; font-weight: 500; letter-spacing: 0.01rem; }
+.lyra-body-xs          { font-size: 10px; line-height: 14px; font-weight: 400; letter-spacing: 0.01rem; }
+.lyra-body-xs-emphasis { font-size: 10px; line-height: 14px; font-weight: 500; letter-spacing: 0.01rem; }
+
+/* ── Hides the scrollbar while keeping the element scrollable — kept in
+   sync with lyra-tokens.css; see that file for the full explanation. ── */
+.lyra-scrollbar-hide {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.lyra-scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* ── Main container content grid (CSS container query) — kept in sync with
+   lyra-tokens.css; see that file for the full explanation. ── */
+.lyra-container-grid-wrap {
+  container-type: inline-size;
+}
+.lyra-container-grid {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+}
+.lyra-container-grid > * {
+  flex: 1 1 0%;
+  min-width: 0;
+}
+@container (max-width: 991px) {
+  .lyra-container-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  /* A lone trailing card in an odd-count row spans both columns instead
+     of sitting half-width with an empty gap beside it. See
+     lyra-tokens.css for the full explanation. */
+  .lyra-container-grid > *:last-child:nth-child(odd) {
+    grid-column: 1 / -1;
+  }
+}
+@container (max-width: 768px) {
+  .lyra-container-grid {
+    display: flex;
+    flex-direction: column;
+  }
+  /* Resets the `flex: 1 1 0%` set on children above — that's needed to
+     evenly split the ROW's width in the wide stage, but left unchecked it
+     also governs each card's HEIGHT once flex-direction is column,
+     shrinking cards toward their minimum content size. See
+     lyra-tokens.css for the full explanation. */
+  .lyra-container-grid > * {
+    flex: none;
+  }
+}
+
+/* ── Form grid (CSS container query) — kept in sync with lyra-tokens.css;
+   see that file for the full explanation. Same pattern as
+   `.lyra-container-grid` above but with its own, narrower thresholds
+   (≤768px 2-up, ≤480px single column) for `FormTemplate`. ── */
+.lyra-form-grid-wrap {
+  container-type: inline-size;
+}
+.lyra-form-grid {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+}
+.lyra-form-grid > * {
+  flex: 1 1 0%;
+  min-width: 0;
+}
+@container (max-width: 768px) {
+  .lyra-form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@container (max-width: 480px) {
+  .lyra-form-grid {
+    display: flex;
+    flex-direction: column;
+  }
+  /* Same fix as `.lyra-container-grid`'s own stage above — see
+     lyra-tokens.css for the full explanation. */
+  .lyra-form-grid > * {
+    flex: none;
+  }
+}
+
+/* ── Card split (CSS container query) — kept in sync with lyra-tokens.css;
+   see that file for the full explanation. Row layout for a DashboardCard's
+   two-region `children` body, stacking to a column when tight. ── */
+.lyra-card-split-wrap {
+  container-type: inline-size;
+}
+.lyra-card-split {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  gap: 1.5rem;
+}
+.lyra-card-split-divider {
+  display: block;
+}
+.lyra-card-split-fixed {
+  width: 12rem;
+  flex-shrink: 0;
+}
+.lyra-card-split-chart {
+  flex: 1 1 0%;
+  min-width: 0;
+  height: 420px;
+}
+@container (max-width: 480px) {
+  .lyra-card-split {
+    flex-direction: column;
+  }
+  .lyra-card-split-divider {
+    display: none;
+  }
+  .lyra-card-split-fixed {
+    width: 100%;
+  }
+  .lyra-card-split-chart {
+    flex: none;
+    width: 100%;
+    height: 340px;
+  }
+}
+
+/* ── Metric row (CSS container query) — kept in sync with lyra-tokens.css;
+   see that file for the full explanation. ── */
+.lyra-metric-row-wrap {
+  container-type: inline-size;
+}
+.lyra-metric-row {
+  display: flex;
+  flex-direction: row;
+}
+.lyra-metric-row--divided {
+  gap: 0;
+}
+.lyra-metric-row-item {
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+.lyra-metric-row-item:first-child {
+  padding-left: 0;
+}
+.lyra-metric-row-item:last-child {
+  padding-right: 0;
+}
+.lyra-metric-row-divider--horizontal {
+  display: none;
+}
+.lyra-metric-row-divider--vertical {
+  display: block;
+}
+.lyra-metric-content {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+.lyra-metric-sparkline {
+  width: 5rem;
+  height: 2.5rem;
+  flex-shrink: 0;
+}
+
+/* Stage 1 — sparkline below the text; row arrangement unchanged. */
+@container (max-width: 768px) {
+  .lyra-metric-content {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .lyra-metric-sparkline {
+    width: 100%;
+  }
+}
+
+/* Stage 2 — 2-up grid; dividers give way to a real gap. */
+@container (max-width: 550px) {
+  .lyra-metric-row {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
+  }
+  .lyra-metric-row-item {
+    padding-left: 0;
+    padding-right: 0;
+  }
+  .lyra-metric-row-divider--horizontal,
+  .lyra-metric-row-divider--vertical {
+    display: none;
+  }
+}
+
+/* Stage 3 — 1-up grid; horizontal Separator comes back. */
+@container (max-width: 360px) {
+  .lyra-metric-row {
+    grid-template-columns: 1fr;
+  }
+  .lyra-metric-row-divider--horizontal {
+    display: block;
+  }
+}
+
+/* Compact override — kept in sync with lyra-tokens.css; see that file for
+   the full explanation. */
+@container (max-width: 360px) {
+  .lyra-metric-row.lyra-metric-row--compact {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .lyra-metric-row.lyra-metric-row--compact .lyra-metric-row-divider--horizontal {
+    display: none;
+  }
+}
+
+/* Single-metric override — kept in sync with lyra-tokens.css; see that
+   file for the full explanation. */
+.lyra-metric-row--single > * {
+  grid-column: 1 / -1;
+}
+
+/* ── Tab overflow (CSS container query) — kept in sync with
+   lyra-tokens.css; see that file for the full explanation, including why
+   both rules are ancestor-scoped (`.lyra-tab-overflow-wrap .lyra-tab-
+   overflow-full`) rather than bare single classes — a bare class ties in
+   specificity with Tailwind's own `.flex` utility on the same element,
+   and silently lost that tie in agent-next-gen-v1's Vite build even
+   though it happened to win in this Storybook build. ── */
+.lyra-tab-overflow-wrap {
+  container-type: inline-size;
+}
+.lyra-tab-overflow-wrap .lyra-tab-overflow-collapsed {
+  display: none;
+}
+@container (max-width: 400px) {
+  .lyra-tab-overflow-wrap .lyra-tab-overflow-full {
+    display: none;
+  }
+  .lyra-tab-overflow-wrap .lyra-tab-overflow-collapsed {
+    display: flex;
+  }
+}
+
+/* Note: TabList's `overflowBreakpoint="compact"` variant (tabs.tsx) does
+   NOT use a CSS container query like `.lyra-tab-overflow-wrap` above — it
+   measures whether the tabs actually fit via a hidden clone + JS
+   ResizeObserver instead of a fixed pixel threshold. See tabs.tsx for the
+   full rationale — no CSS class needed here for that mode. ── */
+
+/* ── PageHeader breadcrumb collapse (CSS container query) — kept in sync
+   with lyra-tokens.css; see that file for the full explanation. Below
+   480px of the breadcrumb slot's own width, the full parent-crumb trail
+   swaps for a single ellipsis trigger (all parent crumbs collapsed into
+   its popover) + the truncating current-page title, instead of wrapping
+   onto a second line. ── */
+.lyra-page-header-breadcrumb-wrap {
+  container-type: inline-size;
+}
+.lyra-page-header-breadcrumb-wrap .lyra-page-header-breadcrumb-collapsed {
+  display: none;
+}
+@container (max-width: 480px) {
+  .lyra-page-header-breadcrumb-wrap .lyra-page-header-breadcrumb-full {
+    display: none;
+  }
+  .lyra-page-header-breadcrumb-wrap .lyra-page-header-breadcrumb-collapsed {
+    display: flex;
+  }
+}
+
+/* ── Base resets for Storybook ── */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: "Inter", ui-sans-serif, system-ui, -apple-system, sans-serif;
+  color: var(--lyra-color-fg-default);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}

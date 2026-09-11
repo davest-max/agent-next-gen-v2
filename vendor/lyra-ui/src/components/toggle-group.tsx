@@ -1,0 +1,193 @@
+import * as React from "react";
+import { cn } from "../lib/utils";
+
+/* ── Types ── */
+
+export type ToggleGroupType = "single" | "multiple";
+
+export interface ToggleGroupItem {
+  value: string;
+  label: React.ReactNode;
+  disabled?: boolean;
+}
+
+export interface ToggleGroupProps {
+  /** Items to render */
+  items: ToggleGroupItem[];
+  /** Selection mode */
+  type?: ToggleGroupType;
+  /** Controlled selected value (single mode) */
+  value?: string;
+  /** Controlled selected values (multiple mode) */
+  values?: string[];
+  /** Default selected value (single, uncontrolled) */
+  defaultValue?: string;
+  /** Default selected values (multiple, uncontrolled) */
+  defaultValues?: string[];
+  /** Called when selection changes */
+  onValueChange?: (value: string) => void;
+  /** Called when selection changes (multiple mode) */
+  onValuesChange?: (values: string[]) => void;
+  /** Disable all items */
+  disabled?: boolean;
+  /**
+   * When true, the root stretches to `w-full` (instead of its default
+   * `inline-flex` content width) and each item becomes an equal-width
+   * `flex-1` column filling that width, its label centered — the same
+   * "stretch to fill the row" shape `TabList`'s own `fullWidth` prop
+   * already gives tab bars. Off by default, matching every other toggle
+   * group in the design system (a compact, content-width control sitting
+   * inline with other row content, e.g. `SchedulePanel.tsx`'s Day/Week
+   * switch) — turn on for a toggle group that's the row's own sole,
+   * full-width content instead (e.g. a combined-panel-mode region switch
+   * standing in for a `fullWidth` `TabList`).
+   */
+  fullWidth?: boolean;
+  /** Additional className on the root */
+  className?: string;
+}
+
+/* ── Component ── */
+
+const ToggleGroup = React.forwardRef<HTMLDivElement, ToggleGroupProps>(
+  (
+    {
+      items,
+      type = "single",
+      value,
+      values,
+      defaultValue,
+      defaultValues,
+      onValueChange,
+      onValuesChange,
+      disabled,
+      fullWidth,
+      className,
+    },
+    ref
+  ) => {
+    /* ── Uncontrolled internal state ── */
+    const [internalValue, setInternalValue] = React.useState<string>(
+      defaultValue ?? ""
+    );
+    const [internalValues, setInternalValues] = React.useState<string[]>(
+      defaultValues ?? []
+    );
+
+    const isControlledSingle = value !== undefined;
+    const isControlledMulti = values !== undefined;
+
+    const currentValue = isControlledSingle ? value : internalValue;
+    const currentValues = isControlledMulti ? values : internalValues;
+
+    const isSelected = (itemValue: string) =>
+      type === "multiple"
+        ? currentValues.includes(itemValue)
+        : currentValue === itemValue;
+
+    const handleClick = (itemValue: string) => {
+      if (type === "multiple") {
+        const next = currentValues.includes(itemValue)
+          ? currentValues.filter((v) => v !== itemValue)
+          : [...currentValues, itemValue];
+        if (!isControlledMulti) setInternalValues(next);
+        onValuesChange?.(next);
+      } else {
+        // Single: clicking selected item deselects it
+        const next = currentValue === itemValue ? "" : itemValue;
+        if (!isControlledSingle) setInternalValue(next);
+        onValueChange?.(next);
+      }
+    };
+
+    return (
+      <div
+        ref={ref}
+        role="group"
+        className={cn(
+          "items-center rounded-lyra-md border border-lyra-border-subtle bg-lyra-bg-surface-base p-0.5 gap-0",
+          fullWidth ? "flex w-full" : "inline-flex",
+          className
+        )}
+      >
+        {items.map((item, i) => {
+          const selected = isSelected(item.value);
+          const isDisabled = disabled || item.disabled;
+
+          /* Divider is always rendered between items to prevent layout shift,
+           * but invisible when either neighbour is selected. */
+          const prevSelected = i > 0 && isSelected(items[i - 1].value);
+          const dividerVisible = i > 0 && !selected && !prevSelected;
+
+          return (
+            <React.Fragment key={item.value}>
+              {i > 0 && (
+                <span
+                  aria-hidden="true"
+                  className={cn(
+                    "w-px h-4 bg-lyra-border-subtle flex-shrink-0 transition-opacity",
+                    dividerVisible ? "opacity-100" : "opacity-0"
+                  )}
+                />
+              )}
+              <button
+                type="button"
+                role="radio"
+                aria-checked={selected}
+                disabled={isDisabled}
+                onClick={() => !isDisabled && handleClick(item.value)}
+                className={cn(
+                  "relative px-4 py-1.5 lyra-body-md rounded-lyra-sm transition-colors select-none",
+                  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-lyra-border-focus focus-visible:ring-offset-1",
+                  // `min-w-0` alongside `flex-1` — a flex item's default
+                  // `min-width: auto` floors it at its own content's
+                  // natural (unwrapped) width, which silently defeats the
+                  // label's own `truncate` below (nothing to actually
+                  // truncate INTO if the item itself refuses to shrink past
+                  // that width first). With it, an item whose label is too
+                  // long for its equal `flex-1` share truncates with an
+                  // ellipsis instead of wrapping onto a second line and
+                  // growing every item's height to match.
+                  fullWidth && "flex-1 min-w-0 flex items-center justify-center",
+                  /* Off — border always present but transparent, so hover/press don't shift layout */
+                  !selected && !isDisabled && [
+                    "text-lyra-fg-default border border-transparent",
+                    "hover:bg-lyra-bg-surface-shell hover:border-lyra-border-soft",
+                    "active:bg-lyra-bg-disabled active:border-lyra-border-soft",
+                  ],
+                  /* Disabled */
+                  isDisabled && !selected && "text-lyra-fg-disabled cursor-not-allowed border border-transparent",
+                  /* Selected / On — color change only, no font-weight shift
+                     (matches the rest of the system's active-state
+                     treatment, e.g. Tag/TreeMenu's leaf-active styling —
+                     `font-medium` here was inconsistent with that). */
+                  selected && !isDisabled && [
+                    "bg-lyra-bg-active-subtle border border-lyra-border-active text-lyra-fg-active-strong",
+                    "hover:bg-lyra-state-hover-active-subtle",
+                    "active:bg-lyra-state-pressed-active-subtle",
+                  ],
+                  /* Selected + disabled */
+                  selected && isDisabled && [
+                    "bg-lyra-bg-active-subtle border border-lyra-border-disabled text-lyra-fg-disabled",
+                  ],
+                )}
+              >
+                {/* `min-w-0 truncate` only under `fullWidth` — `item.label`
+                    accepts any `ReactNode` (an icon, not just text, per
+                    SchedulePanel.tsx's own Day/Week toggle), so this only
+                    wraps it in an extra span when there's actually a fixed-
+                    width flex slot for it to truncate within; the default
+                    inline-content sizing is untouched otherwise. */}
+                {fullWidth ? <span className="min-w-0 truncate">{item.label}</span> : item.label}
+              </button>
+            </React.Fragment>
+          );
+        })}
+      </div>
+    );
+  }
+);
+
+ToggleGroup.displayName = "ToggleGroup";
+
+export { ToggleGroup };

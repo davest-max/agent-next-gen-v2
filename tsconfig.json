@@ -2,7 +2,11 @@
   "compilerOptions": {
     "target": "ES2020",
     "useDefineForClassFields": true,
-    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "lib": [
+      "ES2020",
+      "DOM",
+      "DOM.Iterable"
+    ],
     "module": "ESNext",
     "skipLibCheck": true,
     "moduleResolution": "bundler",
@@ -18,8 +22,21 @@
     "noUncheckedSideEffectImports": true,
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": [
+        "./src/*"
+      ],
+      "@nicecxone/lyra-ui": [
+        "./vendor/lyra-ui/src/index.ts"
+      ],
+      "@nicecxone/lyra-ui/agents-data": [
+        "./vendor/lyra-ui/src/components/__stories__/create-new-agents-data.ts"
+      ],
+      "@nicecxone/lyra-ui/customers-data": [
+        "./vendor/lyra-ui/src/components/__stories__/create-new-customers-data.ts"
+      ]
     }
   },
-  "include": ["src"]
+  "include": [
+    "src"
+  ]
 }
